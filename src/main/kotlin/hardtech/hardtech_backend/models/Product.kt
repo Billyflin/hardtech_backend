@@ -10,7 +10,7 @@ import jakarta.validation.constraints.*
  * Entidad que representa un procesador.
  */
 @Entity
-data class Processor(
+class Processor(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long = 0,
 
     @NotBlank(message = "Marca requerida") @Size(
@@ -36,14 +36,14 @@ data class Processor(
  * Entidad que representa una tarjeta gráfica.
  */
 @Entity
-data class GraphicsCard(
+class GraphicsCard(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long,
     @NotBlank(message = "Marca requerida") @Size(
         max = 50, message = "La marca no puede tener más de 50 caracteres"
-    ) val brand: String,
+    ) var brand: String,
     @NotBlank(message = "Nombre requerido") @Size(
         max = 50, message = "El nombre no puede tener más de 50 caracteres"
-    ) val name: String,
+    ) var name: String,
     @Positive(message = "Precio debe ser mayor a 0") val price: Double,
     @NotBlank(message = "Chipset requerido") @Size(
         max = 50, message = "El chipset no puede tener más de 50 caracteres"
@@ -68,14 +68,14 @@ data class GraphicsCard(
  * Entidad que representa una tarjeta RAM.
  */
 @Entity
-data class Ram(
+class Ram(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long,
     @NotBlank(message = "Marca requerida") @Size(
         max = 50, message = "La marca no puede tener más de 50 caracteres"
-    ) val brand: String,
+    ) var brand: String,
     @NotBlank(message = "Nombre requerido") @Size(
         max = 50, message = "El nombre no puede tener más de 50 caracteres"
-    ) val name: String,
+    ) var name: String,
     @Positive(message = "Precio debe ser mayor a 0") val price: Double,
     @NotBlank(message = "Tipo requerido") @Pattern(
         regexp = "DDR\\d", message = "El tipo debe ser DDR seguido de un número"
@@ -92,14 +92,14 @@ data class Ram(
  * Entidad que representa un almacenamiento.
  */
 @Entity
-data class Storage(
+class Storage(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long = 0,
     @NotBlank(message = "Marca requerida") @Size(
         max = 50, message = "La marca no puede tener más de 50 caracteres"
-    ) val brand: String,
+    ) var brand: String,
     @NotBlank(message = "Nombre requerido") @Size(
         max = 50, message = "El nombre no puede tener más de 50 caracteres"
-    ) val name: String,
+    ) var name: String,
     @Positive(message = "Precio debe ser mayor a 0") val price: Double = 0.0,
     @NotBlank(message = "Tipo requerido") val type: String?,
     @Min(value = 1, message = "Capacidad debe ser mayor a 0") val capacity: Int = 1,
@@ -111,14 +111,14 @@ data class Storage(
  * Entidad que representa una fuente de poder.
  */
 @Entity
-data class PowerSupply(
+class PowerSupply(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long,
     @NotBlank(message = "Marca requerida") @Size(
         max = 50, message = "La marca no puede tener más de 50 caracteres"
-    ) val brand: String,
+    ) var brand: String,
     @NotBlank(message = "Nombre requerido") @Size(
         max = 50, message = "El nombre no puede tener más de 50 caracteres"
-    ) val name: String,
+    ) var name: String,
     @Positive(message = "Precio debe ser mayor a 0") val price: Double,
     @Min(value = 1, message = "Watts debe ser mayor a 0") val watts: Int,
     @NotBlank(message = "Eficiencia requerida") @Pattern(
@@ -136,14 +136,14 @@ data class PowerSupply(
 
  */
 @Entity
-data class Cooling(
+class Cooling(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long,
     @NotBlank(message = "Marca requerida") @Size(
         max = 50, message = "La marca no puede tener más de 50 caracteres"
-    ) val brand: String,
+    ) var brand: String,
     @NotBlank(message = "Nombre requerido") @Size(
         max = 50, message = "El nombre no puede tener más de 50 caracteres"
-    ) val name: String,
+    ) var name: String,
     @Positive(message = "Precio debe ser mayor a 0") val price: Double,
     @NotBlank(message = "Tipo requerido") @Pattern(
         regexp = "Air|Liquid", message = "El tipo debe ser Air o Liquid"

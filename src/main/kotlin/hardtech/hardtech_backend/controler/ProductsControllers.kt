@@ -55,13 +55,176 @@ class ProcessorController(private val processorService: ProcessorService) {
 class GraphicsCardController(private val graphicsCardService: GraphicsCardService) {
 
     @GetMapping
-    fun getAllGraphicsCards(): List<GraphicsCard> = graphicsCardService.getAllGraphicsCards()
+    fun getAllGraphicsCards(): ResponseEntity<List<GraphicsCard>> {
+        val graphicsCards = graphicsCardService.getAllGraphicsCards()
+        return ResponseEntity.ok(graphicsCards)
+    }
+
+    @GetMapping("/{id}")
+    fun getGraphicsCardById(@PathVariable id: Long): ResponseEntity<GraphicsCard> {
+        val graphicsCard = graphicsCardService.getGraphicsCardById(id)
+        return ResponseEntity.ok(graphicsCard)
+    }
 
     @PostMapping
-    fun createGraphicsCard(@RequestBody graphicsCard: GraphicsCard): GraphicsCard =
-        graphicsCardService.createGraphicsCard(graphicsCard)
+    fun createGraphicsCard(@Valid @RequestBody graphicsCard: GraphicsCard): ResponseEntity<GraphicsCard> {
+        val createdGraphicsCard = graphicsCardService.createGraphicsCard(graphicsCard)
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdGraphicsCard)
+    }
 
-    // Agrega aquí más métodos según sea necesario
+    @PutMapping("/{id}")
+    fun updateGraphicsCard(
+        @PathVariable id: Long, @Valid @RequestBody graphicsCard: GraphicsCard
+    ): ResponseEntity<GraphicsCard> {
+        val updatedGraphicsCard = graphicsCardService.updateGraphicsCard(id, graphicsCard)
+        return ResponseEntity.ok(updatedGraphicsCard)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteGraphicsCard(@PathVariable id: Long): ResponseEntity<Void> {
+        graphicsCardService.deleteGraphicsCard(id)
+        return ResponseEntity.noContent().build()
+    }
 }
 
-// Haz lo mismo para las demás entidades (RAM, Storage, PowerSupply, Cooling)
+@RestController
+@RequestMapping("/api/rams")
+class RamController(private val ramService: RamService) {
+
+    @GetMapping
+    fun getAllRams(): ResponseEntity<List<Ram>> {
+        val rams = ramService.getAllRams()
+        return ResponseEntity.ok(rams)
+    }
+
+    @GetMapping("/{id}")
+    fun getRamById(@PathVariable id: Long): ResponseEntity<Ram> {
+        val ram = ramService.getRamById(id)
+        return ResponseEntity.ok(ram)
+    }
+
+    @PostMapping
+    fun createRam(@Valid @RequestBody ram: Ram): ResponseEntity<Ram> {
+        val createdRam = ramService.createRam(ram)
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdRam)
+    }
+
+    @PutMapping("/{id}")
+    fun updateRam(@PathVariable id: Long, @Valid @RequestBody ram: Ram): ResponseEntity<Ram> {
+        val updatedRam = ramService.updateRam(id, ram)
+        return ResponseEntity.ok(updatedRam)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteRam(@PathVariable id: Long): ResponseEntity<Void> {
+        ramService.deleteRam(id)
+        return ResponseEntity.noContent().build()
+    }
+}
+
+@RestController
+@RequestMapping("/api/storages")
+class StorageController(private val storageService: StorageService) {
+
+    @GetMapping
+    fun getAllStorages(): ResponseEntity<List<Storage>> {
+        val storages = storageService.getAllStorages()
+        return ResponseEntity.ok(storages)
+    }
+
+    @GetMapping("/{id}")
+    fun getStorageById(@PathVariable id: Long): ResponseEntity<Storage> {
+        val storage = storageService.getStorageById(id)
+        return ResponseEntity.ok(storage)
+    }
+
+    @PostMapping
+    fun createStorage(@Valid @RequestBody storage: Storage): ResponseEntity<Storage> {
+        val createdStorage = storageService.createStorage(storage)
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdStorage)
+    }
+
+    @PutMapping("/{id}")
+    fun updateStorage(@PathVariable id: Long, @Valid @RequestBody storage: Storage): ResponseEntity<Storage> {
+        val updatedStorage = storageService.updateStorage(id, storage)
+        return ResponseEntity.ok(updatedStorage)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteStorage(@PathVariable id: Long): ResponseEntity<Void> {
+        storageService.deleteStorage(id)
+        return ResponseEntity.noContent().build()
+    }
+}
+
+@RestController
+@RequestMapping("/api/coolings")
+class CoolingController(private val coolingService: CoolingService) {
+
+    @GetMapping
+    fun getAllCoolings(): ResponseEntity<List<Cooling>> {
+        val coolings = coolingService.getAllCoolings()
+        return ResponseEntity.ok(coolings)
+    }
+
+    @GetMapping("/{id}")
+    fun getCoolingById(@PathVariable id: Long): ResponseEntity<Cooling> {
+        val cooling = coolingService.getCoolingById(id)
+        return ResponseEntity.ok(cooling)
+    }
+
+    @PostMapping
+    fun createCooling(@Valid @RequestBody cooling: Cooling): ResponseEntity<Cooling> {
+        val createdCooling = coolingService.createCooling(cooling)
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCooling)
+    }
+
+    @PutMapping("/{id}")
+    fun updateCooling(@PathVariable id: Long, @Valid @RequestBody cooling: Cooling): ResponseEntity<Cooling> {
+        val updatedCooling = coolingService.updateCooling(id, cooling)
+        return ResponseEntity.ok(updatedCooling)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteCooling(@PathVariable id: Long): ResponseEntity<Void> {
+        coolingService.deleteCooling(id)
+        return ResponseEntity.noContent().build()
+    }
+}
+
+@RestController
+@RequestMapping("/api/powerSupplies")
+class PowerSupplyController(private val powerSupplyService: PowerSupplyService) {
+
+    @GetMapping
+    fun getAllPowerSupplies(): ResponseEntity<List<PowerSupply>> {
+        val powerSupplies = powerSupplyService.getAllPowerSupplies()
+        return ResponseEntity.ok(powerSupplies)
+    }
+
+    @GetMapping("/{id}")
+    fun getPowerSupplyById(@PathVariable id: Long): ResponseEntity<PowerSupply> {
+        val powerSupply = powerSupplyService.getPowerSupplyById(id)
+        return ResponseEntity.ok(powerSupply)
+    }
+
+    @PostMapping
+    fun createPowerSupply(@Valid @RequestBody powerSupply: PowerSupply): ResponseEntity<PowerSupply> {
+        val createdPowerSupply = powerSupplyService.createPowerSupply(powerSupply)
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPowerSupply)
+    }
+
+    @PutMapping("/{id}")
+    fun updatePowerSupply(
+        @PathVariable id: Long, @Valid @RequestBody powerSupply: PowerSupply
+    ): ResponseEntity<PowerSupply> {
+        val updatedPowerSupply = powerSupplyService.updatePowerSupply(id, powerSupply)
+        return ResponseEntity.ok(updatedPowerSupply)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deletePowerSupply(@PathVariable id: Long): ResponseEntity<Void> {
+        powerSupplyService.deletePowerSupply(id)
+        return ResponseEntity.noContent().build()
+    }
+}

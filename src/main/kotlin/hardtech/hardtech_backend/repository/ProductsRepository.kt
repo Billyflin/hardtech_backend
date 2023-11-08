@@ -7,4 +7,12 @@ interface ProcessorRepository : JpaRepository<Processor, Long>
 
 interface GraphicsCardRepository : JpaRepository<GraphicsCard, Long>
 
+interface StorageRepository : JpaRepository<Storage, Long>
+
+interface CoolingRepository : JpaRepository<Cooling, Long>
+
+interface PowerSupplyRepository : JpaRepository<PowerSupply, Long>
+
+interface RamRepository : JpaRepository<Ram, Long>
+
 // Haz lo mismo para las demás entidades (RAM, Storage, PowerSupply, Cooling)
