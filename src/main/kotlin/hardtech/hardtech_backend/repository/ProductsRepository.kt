@@ -3,16 +3,28 @@ package hardtech.hardtech_backend.repository
 import hardtech.hardtech_backend.models.*
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface ProcessorRepository : JpaRepository<Processor, Long>
+interface ProcessorRepository : JpaRepository<Processor, Long> {
+    fun findByName(name: String): Processor?
+}
 
-interface GraphicsCardRepository : JpaRepository<GraphicsCard, Long>
+interface GraphicsCardRepository : JpaRepository<GraphicsCard, Long> {
+    fun findByName(name: String): GraphicsCard?
 
-interface StorageRepository : JpaRepository<Storage, Long>
+}
 
-interface CoolingRepository : JpaRepository<Cooling, Long>
+interface StorageRepository : JpaRepository<Storage, Long> {
+    fun findByName(name: String): Storage?
+}
 
-interface PowerSupplyRepository : JpaRepository<PowerSupply, Long>
+interface CoolingRepository : JpaRepository<Cooling, Long> {
+    fun findByName(name: String): Cooling?
+}
 
-interface RamRepository : JpaRepository<Ram, Long>
+interface PowerSupplyRepository : JpaRepository<PowerSupply, Long> {
+    fun findByName(name: String): PowerSupply?
+}
 
-// Haz lo mismo para las demás entidades (RAM, Storage, PowerSupply, Cooling)
+interface RamRepository : JpaRepository<Ram, Long> {
+    fun findByName(name: String): Ram?
+}
+

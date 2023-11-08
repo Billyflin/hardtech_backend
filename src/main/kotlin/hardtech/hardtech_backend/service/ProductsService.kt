@@ -35,7 +35,14 @@ class ProcessorService(private val processorRepository: ProcessorRepository) {
         val existingProcessor = getProcessorById(id)
         existingProcessor.brand = processor.brand
         existingProcessor.name = processor.name
-        // ... actualizar los demás campos ...
+        existingProcessor.price = processor.price
+        existingProcessor.gen = processor.gen
+        existingProcessor.cores = processor.cores
+        existingProcessor.threads = processor.threads
+        existingProcessor.speed = processor.speed
+        existingProcessor.turbo = processor.turbo
+        existingProcessor.tdp = processor.tdp
+        existingProcessor.socket = processor.socket
         validateProcessor(existingProcessor)
         return processorRepository.save(existingProcessor)
     }
@@ -86,6 +93,13 @@ class ProcessorService(private val processorRepository: ProcessorRepository) {
         if (processor.socket.isBlank()) {
             throw IllegalArgumentException("El socket es obligatorio")
         }
+        // Validar que el nombre no esté en uso
+        val existingProcessor = processorRepository.findByName(processor.name!!)
+        if (existingProcessor != null && existingProcessor.id != processor.id) {
+            throw IllegalArgumentException("El nombre ya está en uso")
+        }
+
+
     }
 }
 
@@ -118,10 +132,15 @@ class StorageService(private val storageRepository: StorageRepository) {
         val existingStorage = getStorageById(id)
         existingStorage.brand = storage.brand
         existingStorage.name = storage.name
-        // ... actualizar los demás campos ...
+        existingStorage.price = storage.price
+        existingStorage.type = storage.type
+        existingStorage.capacity = storage.capacity
+        existingStorage.readSpeed = storage.readSpeed
+        existingStorage.writeSpeed = storage.writeSpeed
         validateStorage(existingStorage)
         return storageRepository.save(existingStorage)
     }
+
 
     fun deleteStorage(id: Long) {
         logger.info("Deleting storage with id: $id")
@@ -129,8 +148,48 @@ class StorageService(private val storageRepository: StorageRepository) {
     }
 
     private fun validateStorage(storage: Storage) {
-        // Agrega aquí tu lógica de validación
+        // Validar que la marca no esté en blanco
+        if (storage.brand.isBlank()) {
+            throw IllegalArgumentException("La marca es obligatoria")
+        }
+
+        // Validar que el nombre no esté en blanco
+        if (storage.name.isBlank()) {
+            throw IllegalArgumentException("El nombre es obligatorio")
+        }
+
+        // Validar que el precio sea mayor a 0
+        if (storage.price <= 0) {
+            throw IllegalArgumentException("El precio debe ser mayor a 0")
+        }
+
+        // Validar que el tipo no esté en blanco
+        if (storage.type.isNullOrBlank()) {
+            throw IllegalArgumentException("El tipo es obligatorio")
+        }
+
+        // Validar que la capacidad sea mayor a 0
+        if (storage.capacity <= 0) {
+            throw IllegalArgumentException("La capacidad debe ser mayor a 0")
+        }
+
+        // Validar que la velocidad de lectura sea mayor a 0
+        if (storage.readSpeed <= 0) {
+            throw IllegalArgumentException("La velocidad de lectura debe ser mayor a 0")
+        }
+
+        // Validar que la velocidad de escritura sea mayor a 0
+        if (storage.writeSpeed <= 0) {
+            throw IllegalArgumentException("La velocidad de escritura debe ser mayor a 0")
+        }
+
+        // Validar que el nombre no esté en uso
+        val existingStorage = storageRepository.findByName(storage.name)
+        if (existingStorage != null && existingStorage.id != storage.id) {
+            throw IllegalArgumentException("El nombre ya está en uso")
+        }
     }
+
 }
 
 @Service
@@ -147,9 +206,72 @@ class CoolingService(private val coolingRepository: CoolingRepository) {
         val existingCooling = getCoolingById(id)
         existingCooling.brand = cooling.brand
         existingCooling.name = cooling.name
-        // ... actualizar los demás campos ...
+        existingCooling.price = cooling.price
+        existingCooling.type = cooling.type
+        existingCooling.fans = cooling.fans
+        existingCooling.fanSize = cooling.fanSize
+        existingCooling.fanRpm = cooling.fanRpm
+        existingCooling.noiseLevel = cooling.noiseLevel
+        existingCooling.color = cooling.color
+        existingCooling.rgb = cooling.rgb
+        existingCooling.rgbHeader = cooling.rgbHeader
+        existingCooling.blockRgb = cooling.blockRgb
+        validateCooling(existingCooling)
         return coolingRepository.save(existingCooling)
     }
+
+    private fun validateCooling(cooling: Cooling) {
+        // Validar que la marca no esté en blanco
+        if (cooling.brand.isBlank()) {
+            throw IllegalArgumentException("La marca es obligatoria")
+        }
+
+        // Validar que el nombre no esté en blanco
+        if (cooling.name.isBlank()) {
+            throw IllegalArgumentException("El nombre es obligatorio")
+        }
+
+        // Validar que el precio sea mayor a 0
+        if (cooling.price <= 0) {
+            throw IllegalArgumentException("El precio debe ser mayor a 0")
+        }
+
+        // Validar que el tipo no esté en blanco
+        if (cooling.type.isBlank()) {
+            throw IllegalArgumentException("El tipo es obligatorio")
+        }
+
+        // Validar que los ventiladores sean mayores a 0
+        if (cooling.fans <= 0) {
+            throw IllegalArgumentException("Los ventiladores deben ser mayores a 0")
+        }
+
+        // Validar que el tamaño del ventilador sea mayor a 0
+        if (cooling.fanSize <= 0) {
+            throw IllegalArgumentException("El tamaño del ventilador debe ser mayor a 0")
+        }
+
+        // Validar que las RPM del ventilador sean mayores a 0
+        if (cooling.fanRpm <= 0) {
+            throw IllegalArgumentException("Las RPM del ventilador deben ser mayores a 0")
+        }
+
+        // Validar que el nivel de ruido sea mayor a 0
+        if (cooling.noiseLevel <= 0) {
+            throw IllegalArgumentException("El nivel de ruido debe ser mayor a 0")
+        }
+
+        // Validar que el color no esté en blanco
+        if (cooling.color.isBlank()) {
+            throw IllegalArgumentException("El color es obligatorio")
+        }
+        // Validar que el nombre no esté en uso
+        val existingCooling = coolingRepository.findByName(cooling.name)
+        if (existingCooling != null && existingCooling.id != cooling.id) {
+            throw IllegalArgumentException("El nombre ya está en uso")
+        }
+    }
+
 
     fun deleteCooling(id: Long) = coolingRepository.deleteById(id)
 }
@@ -168,8 +290,49 @@ class PowerSupplyService(private val powerSupplyRepository: PowerSupplyRepositor
         val existingPowerSupply = getPowerSupplyById(id)
         existingPowerSupply.brand = powerSupply.brand
         existingPowerSupply.name = powerSupply.name
-        // ... actualizar los demás campos ...
+        existingPowerSupply.price = powerSupply.price
+        existingPowerSupply.watts = powerSupply.watts
+        existingPowerSupply.efficiency = powerSupply.efficiency
+        existingPowerSupply.modular = powerSupply.modular
+        validatePowerSupply(existingPowerSupply)
         return powerSupplyRepository.save(existingPowerSupply)
+    }
+
+    private fun validatePowerSupply(powerSupply: PowerSupply) {
+        // Validar que la marca no esté en blanco
+        if (powerSupply.brand.isBlank()) {
+            throw IllegalArgumentException("La marca es obligatoria")
+        }
+
+        // Validar que el nombre no esté en blanco
+        if (powerSupply.name.isBlank()) {
+            throw IllegalArgumentException("El nombre es obligatorio")
+        }
+
+        // Validar que el precio sea mayor a 0
+        if (powerSupply.price <= 0) {
+            throw IllegalArgumentException("El precio debe ser mayor a 0")
+        }
+
+        // Validar que los watts sean mayores a 0
+        if (powerSupply.watts <= 0) {
+            throw IllegalArgumentException("Los watts deben ser mayores a 0")
+        }
+
+        // Validar que la eficiencia no esté en blanco
+        if (powerSupply.efficiency.isBlank()) {
+            throw IllegalArgumentException("La eficiencia es obligatoria")
+        }
+
+        // Validar que el modular no esté en blanco
+        if (powerSupply.modular.isBlank()) {
+            throw IllegalArgumentException("El modular es obligatorio")
+        }
+        // Validar que el nombre no esté en uso
+        val existingPowerSupply = powerSupplyRepository.findByName(powerSupply.name)
+        if (existingPowerSupply != null && existingPowerSupply.id != powerSupply.id) {
+            throw IllegalArgumentException("El nombre ya está en uso")
+        }
     }
 
     fun deletePowerSupply(id: Long) = powerSupplyRepository.deleteById(id)
@@ -204,10 +367,22 @@ class GraphicsCardService(private val graphicsCardRepository: GraphicsCardReposi
         val existingGraphicsCard = getGraphicsCardById(id)
         existingGraphicsCard.brand = graphicsCard.brand
         existingGraphicsCard.name = graphicsCard.name
-        // ... actualizar los demás campos ...
+        existingGraphicsCard.price = graphicsCard.price
+        existingGraphicsCard.chipset = graphicsCard.chipset
+        existingGraphicsCard.memoryType = graphicsCard.memoryType
+        existingGraphicsCard.memory = graphicsCard.memory
+        existingGraphicsCard.speed = graphicsCard.speed
+        existingGraphicsCard.tdp = graphicsCard.tdp
+        existingGraphicsCard.power = graphicsCard.power
+        existingGraphicsCard.length = graphicsCard.length
+        existingGraphicsCard.fans = graphicsCard.fans
+        existingGraphicsCard.displayPorts = graphicsCard.displayPorts
+        existingGraphicsCard.hdmi = graphicsCard.hdmi
+        existingGraphicsCard.vga = graphicsCard.vga
         validateGraphicsCard(existingGraphicsCard)
         return graphicsCardRepository.save(existingGraphicsCard)
     }
+
 
     fun deleteGraphicsCard(id: Long) {
         logger.info("Deleting graphics card with id: $id")
@@ -215,8 +390,81 @@ class GraphicsCardService(private val graphicsCardRepository: GraphicsCardReposi
     }
 
     private fun validateGraphicsCard(graphicsCard: GraphicsCard) {
-        // Agrega aquí tu lógica de validación
+        // Validar que la marca no esté en blanco
+        if (graphicsCard.brand.isBlank()) {
+            throw IllegalArgumentException("La marca es obligatoria")
+        }
+
+        // Validar que el nombre no esté en blanco
+        if (graphicsCard.name.isBlank()) {
+            throw IllegalArgumentException("El nombre es obligatorio")
+        }
+
+        // Validar que el precio sea mayor a 0
+        if (graphicsCard.price <= 0) {
+            throw IllegalArgumentException("El precio debe ser mayor a 0")
+        }
+
+        // Validar que el chipset no esté en blanco
+        if (graphicsCard.chipset.isBlank()) {
+            throw IllegalArgumentException("El chipset es obligatorio")
+        }
+
+        // Validar que el tipo de memoria no esté en blanco
+        if (graphicsCard.memoryType.isBlank()) {
+            throw IllegalArgumentException("El tipo de memoria es obligatorio")
+        }
+
+        // Validar que la memoria sea mayor a 0
+        if (graphicsCard.memory <= 0) {
+            throw IllegalArgumentException("La memoria debe ser mayor a 0")
+        }
+
+        // Validar que la velocidad sea mayor a 0
+        if (graphicsCard.speed <= 0) {
+            throw IllegalArgumentException("La velocidad debe ser mayor a 0")
+        }
+
+        // Validar que el TDP sea mayor a 0
+        if (graphicsCard.tdp <= 0) {
+            throw IllegalArgumentException("El TDP debe ser mayor a 0")
+        }
+
+        // Validar que la potencia sea mayor a 0
+        if (graphicsCard.power <= 0) {
+            throw IllegalArgumentException("La potencia debe ser mayor a 0")
+        }
+
+        // Validar que la longitud sea mayor a 0
+        if (graphicsCard.length <= 0) {
+            throw IllegalArgumentException("La longitud debe ser mayor a 0")
+        }
+
+        // Validar que los ventiladores sean mayores a 0
+        if (graphicsCard.fans <= 0) {
+            throw IllegalArgumentException("Los ventiladores deben ser mayores a 0")
+        }
+
+        // Validar que los puertos de pantalla sean mayores a 0
+        if (graphicsCard.displayPorts <= 0) {
+            throw IllegalArgumentException("Los puertos de pantalla deben ser mayores a 0")
+        }
+
+        // Validar que HDMI no sea negativo
+        if (graphicsCard.hdmi <= -1) {
+            throw IllegalArgumentException("HDMI debe ser mayor a 0")
+        }
+
+        // Validar que VGA no sea negativo
+        if (graphicsCard.vga <= -1) {
+            throw IllegalArgumentException("VGA debe ser mayor a 0")
+        }
+        val existingGraphicsCard = graphicsCardRepository.findByName(graphicsCard.name)
+        if (existingGraphicsCard != null && existingGraphicsCard.id != graphicsCard.id) {
+            throw IllegalArgumentException("El nombre ya está en uso")
+        }
     }
+
 }
 
 
@@ -233,12 +481,69 @@ class RamService(private val ramRepository: RamRepository) {
         val existingRam = getRamById(id)
         existingRam.brand = ram.brand
         existingRam.name = ram.name
-        // ... actualizar los demás campos ...
+        existingRam.price = ram.price
+        existingRam.type = ram.type
+        existingRam.speed = ram.speed
+        existingRam.size = ram.size
+        existingRam.modules = ram.modules
+        existingRam.cas = ram.cas
+        existingRam.voltage = ram.voltage
+        validateRam(existingRam)
         return ramRepository.save(existingRam)
+    }
+
+    private fun validateRam(ram: Ram) {
+        // Validar que la marca no esté en blanco
+        if (ram.brand.isBlank()) {
+            throw IllegalArgumentException("La marca es obligatoria")
+        }
+
+        // Validar que el nombre no esté en blanco
+        if (ram.name.isBlank()) {
+            throw IllegalArgumentException("El nombre es obligatorio")
+        }
+
+        // Validar que el precio sea mayor a 0
+        if (ram.price <= 0) {
+            throw IllegalArgumentException("El precio debe ser mayor a 0")
+        }
+
+        // Validar que el tipo no esté en blanco
+        if (ram.type.isBlank()) {
+            throw IllegalArgumentException("El tipo es obligatorio")
+        }
+
+        // Validar que la velocidad sea mayor a 0
+        if (ram.speed <= 0) {
+            throw IllegalArgumentException("La velocidad debe ser mayor a 0")
+        }
+
+        // Validar que el tamaño sea mayor a 0
+        if (ram.size <= 0) {
+            throw IllegalArgumentException("El tamaño debe ser mayor a 0")
+        }
+
+        // Validar que los módulos sean mayores a 0
+        if (ram.modules <= 0) {
+            throw IllegalArgumentException("Los módulos deben ser mayores a 0")
+        }
+
+        // Validar que CAS sea mayor a 0
+        if (ram.cas <= 0) {
+            throw IllegalArgumentException("CAS debe ser mayor a 0")
+        }
+
+        // Validar que el voltaje sea mayor a 0
+        if (ram.voltage <= 0) {
+            throw IllegalArgumentException("El voltaje debe ser mayor a 0")
+        }
+        // Validar que el nombre no esté en uso
+        val existingRam = ramRepository.findByName(ram.name)
+        if (existingRam != null && existingRam.id != ram.id) {
+            throw IllegalArgumentException("El nombre ya está en uso")
+        }
+
     }
 
     fun deleteRam(id: Long) = ramRepository.deleteById(id)
 }
-
-
-// Haz lo mismo para las demás entidades (RAM, Storage, PowerSupply, Cooling)
