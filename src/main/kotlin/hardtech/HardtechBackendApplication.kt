@@ -1,4 +1,4 @@
-package hardtech.hardtech_backend
+package hardtech
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class HardtechBackendApplication
 
 fun main(args: Array<String>) {
-    runApplication<HardtechBackendApplication>(*args)
+	runApplication<HardtechBackendApplication>(*args)
 }

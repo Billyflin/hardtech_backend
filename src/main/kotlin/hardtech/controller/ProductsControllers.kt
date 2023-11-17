@@ -1,7 +1,7 @@
-package hardtech.hardtech_backend.controler
+package hardtech.controller
 
-import hardtech.hardtech_backend.models.*
-import hardtech.hardtech_backend.service.*
+import hardtech.entity.*
+import hardtech.service.*
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

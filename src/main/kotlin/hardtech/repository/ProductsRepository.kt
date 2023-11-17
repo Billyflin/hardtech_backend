@@ -1,6 +1,6 @@
-package hardtech.hardtech_backend.repository
+package hardtech.repository
 
-import hardtech.hardtech_backend.models.*
+import hardtech.entity.*
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface ProcessorRepository : JpaRepository<Processor, Long> {

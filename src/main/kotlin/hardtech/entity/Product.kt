@@ -1,4 +1,4 @@
-package hardtech.hardtech_backend.models
+package hardtech.entity
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.*

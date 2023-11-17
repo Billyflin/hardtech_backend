@@ -1,7 +1,7 @@
-package hardtech.hardtech_backend.service
+package hardtech.service
 
-import hardtech.hardtech_backend.models.*
-import hardtech.hardtech_backend.repository.*
+import hardtech.entity.*
+import hardtech.repository.*
 import org.slf4j.LoggerFactory
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.stereotype.Service
