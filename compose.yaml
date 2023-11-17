@@ -2,15 +2,11 @@ version: '3.9'
 
 services:
   hardtech_backend:
-    container_name: hardtech_backend
-    image: billyflin/hardtech_backend:latest
+    container_name: hardtech
+    image: billyflin/hardtech:latest
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        DB_URL: ${DB_URL}
-        PG_USER: ${PG_USER}
-        PG_PASSWORD: ${PG_PASSWORD}
     ports:
       - "8080:8080"
     environment:

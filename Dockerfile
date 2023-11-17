@@ -1,18 +1,18 @@
 # This is the docker-compose file that will be used to build the docker image
-FROM amazoncorretto:17-alpine-jdk
+FROM openjdk:17-jdk-alpine
 LABEL authors="Billy"
 
-# Create a directory
+# Set the working directory to /app
 WORKDIR /app
 
-# Copy all the files from the current directory to the image
-COPY . .
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-# build the project avoiding tests
-RUN ./gradlew clean build -x test
+# Install any needed packages specified in requirements.txt
+RUN gradlew clean build
 
-# Expose port 8080
+# Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-# Run the jar file
-CMD ["java", "-jar", "build/libs/hardtech_backend-0.0.1-SNAPSHOT.jar"]
+# Run app.py when the container launches
+CMD ["java", "-jar", "./build/libs/hardtech_backend-0.0.1-SNAPSHOT.jar"]
