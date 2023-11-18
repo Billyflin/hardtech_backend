@@ -23,13 +23,13 @@ class UserService(
             throw DuplicateMemberException("이미 가입되어 있는 유저입니다.")
         }
 
-        val authority = Authority("ROLE_USER")
+        val authorities = userDto.authorityDtoSet?.map { Authority(it.authorityName) }?.toSet() ?: setOf(Authority("ROLE_USER"))
 
         val user = User(
             username = userDto.username,
             password = passwordEncoder.encode(userDto.password),
             nickname = userDto.nickname,
-            authorities = setOf(authority),
+            authorities = authorities,
             isActivated = true
         )
 

@@ -19,12 +19,12 @@ class CustomUserDetailsService(
     override fun loadUserByUsername(username: String): UserDetails {
         return userRepository.findOneWithAuthoritiesByUsername(username)
             .map { user: hardtech.entity.User -> createUser(username, user) }
-            .orElseThrow { UsernameNotFoundException("$username -> 데이터베이스에서 찾을 수 없습니다.") }
+            .orElseThrow { UsernameNotFoundException("$username -> No se encontró") }
     }
 
     private fun createUser(username: String, user: hardtech.entity.User): User {
         if (!user.isActivated) {
-            throw RuntimeException("$username -> 활성화되어 있지 않습니다.")
+            throw RuntimeException("$username -> No está activado")
         }
 
         val grantedAuthorities = user.authorities!!.stream()

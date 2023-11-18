@@ -1,18 +1,15 @@
-# This is the docker-compose file that will be used to build the docker image
-FROM openjdk:17-jdk-alpine
-LABEL authors="Billy"
+FROM gradle:latest AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle build --no-daemon 
 
-# Set the working directory to /app
-WORKDIR /app
+FROM openjdk:17-alpine AS serve
 
-# Copy the current directory contents into the container at /app
-COPY . /app
 
-# Install any needed packages specified in requirements.txt
-RUN gradlew clean build
-
-# Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-# Run app.py when the container launches
-CMD ["java", "-jar", "./build/libs/hardtech_backend-0.0.1-SNAPSHOT.jar"]
+RUN mkdir /app
+
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
+
+ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-Djava.security.egd=file:/dev/./urandom","-jar","/app/spring-boot-application.jar"]

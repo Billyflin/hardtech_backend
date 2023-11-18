@@ -34,7 +34,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("org.postgresql:postgresql")
 
-    implementation ("org.springframework.boot:spring-boot-docker-compose")
+//    implementation ("org.springframework.boot:spring-boot-docker-compose")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
@@ -47,6 +47,14 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    enabled = true
+}
+tasks.named<org.gradle.jvm.tasks.Jar>("jar") {
+    enabled = false
 }
