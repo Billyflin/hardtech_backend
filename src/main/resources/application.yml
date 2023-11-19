@@ -4,16 +4,16 @@ spring:
       enabled: true
 
   datasource:
-    url: ${DB_URL}
-    username: ${PG_USER}
-    password: ${PG_PASSWORD}
-#    url: jdbc:postgresql://localhost:5432/postgres
-#    username: postgres
-#    password: postgres
+#    url: ${DB_URL}
+#    username: ${PG_USER}
+#    password: ${PG_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: true

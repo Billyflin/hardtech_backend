@@ -1,10 +1,10 @@
 package hardtech.controller
 
-import jakarta.validation.Valid
 import hardtech.dto.LoginDto
 import hardtech.dto.TokenDto
 import hardtech.jwt.JwtFilter
 import hardtech.jwt.TokenProvider
+import jakarta.validation.Valid
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -27,7 +27,7 @@ class AuthController(
     fun authorize(@RequestBody @Valid loginDto: LoginDto): ResponseEntity<TokenDto> {
         val authenticationToken = UsernamePasswordAuthenticationToken(loginDto.username, loginDto.password)
         val authentication: Authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken)
-        SecurityContextHolder.getContext().setAuthentication(authentication)
+        SecurityContextHolder.getContext().authentication = authentication
         val jwt: String = tokenProvider.createToken(authentication)
         val httpHeaders = HttpHeaders()
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer $jwt")

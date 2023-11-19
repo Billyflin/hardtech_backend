@@ -2,8 +2,8 @@ version: '3.9'
 
 services:
   hardtech_backend:
-    container_name: hardtech
-    image: billyflin/hardtech:latest
+    container_name: hardtech_backend
+    image: billyflin/hardtech_backend:latest
     build:
       context: .
       dockerfile: Dockerfile

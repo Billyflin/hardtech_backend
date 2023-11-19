@@ -1,9 +1,9 @@
 package hardtech.config
 
-import hardtech.jwt.TokenProvider
 import hardtech.jwt.JwtAccessDeniedHandler
 import hardtech.jwt.JwtAuthenticationEntryPoint
 import hardtech.jwt.JwtSecurityConfig
+import hardtech.jwt.TokenProvider
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -40,25 +40,34 @@ class SecurityConfig(
 
             .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter::class.java)
 
-            .exceptionHandling{
-                it.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                  .accessDeniedHandler(jwtAccessDeniedHandler)
+            .exceptionHandling {
+                it.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler)
             }
 
-            .authorizeHttpRequests{
-                it.requestMatchers("/api/hello", "/api/authenticate", "/api/signup").permitAll()
-                .requestMatchers(PathRequest.toH2Console()).permitAll()
-                .anyRequest().authenticated()
+            .authorizeHttpRequests {
+                it.requestMatchers(
+                    "/api/hello",
+                    "/api/authenticate",
+                    "/api/signup",
+                    "/products",
+                    "/motherboardDetails",
+                    "/powerSupplyDetails",
+                    "/processorDetails",
+                    "/ramDetails"
+                ).permitAll()
+
+                    .requestMatchers(PathRequest.toH2Console()).permitAll().requestMatchers("/api/**").hasRole("USER")
+                    .anyRequest().authenticated()
             }
 
             // 세션을 사용하지 않기 때문에 STATELESS로 설정
-            .sessionManagement{
+            .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
 
             // enable h2-console
-            .headers{
-                it.frameOptions{ options ->
+            .headers {
+                it.frameOptions { options ->
                     options.sameOrigin()
                 }
             }
