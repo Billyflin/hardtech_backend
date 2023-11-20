@@ -51,6 +51,15 @@ class MotherboardDetailsController(private val motherboardDetailsService: Mother
             ResponseEntity.notFound().build()
         }
     }
+    @PostMapping("/batch")
+    fun save(@Valid @RequestBody motherboardDetailsList: List<MotherboardDetails>): ResponseEntity<Any> {
+        return try {
+            val savedMotherboardDetailsList = motherboardDetailsList.map { motherboardDetailsService.save(it) }
+            ResponseEntity.ok(savedMotherboardDetailsList)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
+    }
 
     @PostMapping
     fun save(@Valid @RequestBody motherboardDetails: MotherboardDetails): ResponseEntity<Any> {
@@ -61,6 +70,7 @@ class MotherboardDetailsController(private val motherboardDetailsService: Mother
             ResponseEntity.badRequest().body(e.message)
         }
     }
+
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleHttpMessageNotReadableException(): ResponseEntity<String> {
         return ResponseEntity.badRequest().body("Falta un campo requerido en la solicitud")
@@ -79,6 +89,15 @@ class CoolingDetailsController(private val coolingDetailsService: CoolingDetails
             ResponseEntity.ok(coolingDetails)
         } catch (e: RuntimeException) {
             ResponseEntity.notFound().build()
+        }
+    }
+    @PostMapping("/batch")
+    fun save(@Valid @RequestBody coolingDetailsList: List<CoolingDetails>): ResponseEntity<Any> {
+        return try {
+            val savedCoolingDetailsList = coolingDetailsList.map { coolingDetailsService.save(it) }
+            ResponseEntity.ok(savedCoolingDetailsList)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
         }
     }
 
@@ -106,6 +125,15 @@ class PowerSupplyDetailsController(private val powerSupplyDetailsService: PowerS
             ResponseEntity.notFound().build()
         }
     }
+    @PostMapping("/batch")
+    fun save(@Valid @RequestBody powerSupplyDetailsList: List<PowerSupplyDetails>): ResponseEntity<Any> {
+        return try {
+            val savedPowerSupplyDetailsList = powerSupplyDetailsList.map { powerSupplyDetailsService.save(it) }
+            ResponseEntity.ok(savedPowerSupplyDetailsList)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
+    }
 
     @PostMapping
     fun save(@Valid @RequestBody powerSupplyDetails: PowerSupplyDetails): ResponseEntity<Any> {
@@ -129,6 +157,15 @@ class ProcessorDetailsController(private val processorDetailsService: ProcessorD
             ResponseEntity.ok(processorDetails)
         } catch (e: RuntimeException) {
             ResponseEntity.notFound().build()
+        }
+    }
+    @PostMapping("/batch")
+    fun save(@Valid @RequestBody processorDetailsList: List<ProcessorDetails>): ResponseEntity<Any> {
+        return try {
+            val savedProcessorDetailsList = processorDetailsList.map { processorDetailsService.save(it) }
+            ResponseEntity.ok(savedProcessorDetailsList)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
         }
     }
 
@@ -157,6 +194,16 @@ class RAMDetailsController(private val ramDetailsService: RAMDetailsService) {
         }
     }
 
+    @PostMapping("/batch")
+    fun save(@Valid @RequestBody ramDetailsList: List<RAMDetails>): ResponseEntity<Any> {
+        return try {
+            val savedRAMDetailsList = ramDetailsList.map { ramDetailsService.save(it) }
+            ResponseEntity.ok(savedRAMDetailsList)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
+    }
+
     @PostMapping
     fun save(@Valid @RequestBody ramDetails: RAMDetails): ResponseEntity<Any> {
         return try {
@@ -181,7 +228,15 @@ class GraphicsCardDetailsController(private val graphicsCardDetailsService: Grap
             ResponseEntity.notFound().build()
         }
     }
-
+    @PostMapping("/batch")
+    fun save(@Valid @RequestBody graphicsCardDetailsList: List<GraphicsCardDetails>): ResponseEntity<Any> {
+        return try {
+            val savedGraphicsCardDetailsList = graphicsCardDetailsList.map { graphicsCardDetailsService.save(it) }
+            ResponseEntity.ok(savedGraphicsCardDetailsList)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
+    }
     @PostMapping
     fun save(@Valid @RequestBody graphicsCardDetails: GraphicsCardDetails): ResponseEntity<Any> {
         return try {
