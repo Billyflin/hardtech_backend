@@ -41,7 +41,6 @@ data class Product(
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
     @JsonManagedReference
     val images: MutableList<Image> = mutableListOf()
-
 )
 
 @Entity

@@ -17,13 +17,7 @@ values (2, 'ROLE_USER');
 
 -- Datos de prueba para la tabla de Categorías
 INSERT INTO categories (category_id, category_name)
-VALUES (1, 'Cooling'),
-       (2, 'Graphics Card'),
-       (3, 'Motherboard'),
-         (4, 'Power Supply'),
-         (5, 'Processor'),
-         (6, 'RAM'),
-         (7, 'Storage'),
+VALUES
          (99,'Categoría de prueba');
 
 

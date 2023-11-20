@@ -29,3 +29,5 @@ interface OrderDetailsRepository : JpaRepository<OrderDetails, Long>
 
 interface ImageRepository : JpaRepository<Image, Long>
 
+interface CategoriesRepository : JpaRepository<Categories, Long>
+

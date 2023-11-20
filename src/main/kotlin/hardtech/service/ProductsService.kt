@@ -8,14 +8,35 @@ import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.web.multipart.MultipartFile
+import java.util.*
 
+data class ImageDTO(
+    val imageId: Long,
+    val imageDataBase64: String
+)
 
+data class ProductDTO(
+    val productId: Long,
+    val productName: String,
+    val brand: String,
+    val price: Double,
+    val category: Categories,
+    val images: List<ImageDTO>
+)
 @Service
 class ProductService(private val productRepository: ProductRepository, private val productValidator: ProductValidator) {
 
-    fun findAll(): List<Product> {
-        return productRepository.findAll()
+    fun findAll(): List<ProductDTO> {
+        val products = productRepository.findAll()
+        return products.map { product ->
+            val images = product.images.map { image ->
+                val imageDataBase64 = Base64.getEncoder().encodeToString(image.imageData)
+                ImageDTO(image.imageId, imageDataBase64)
+            }
+            ProductDTO(product.productId, product.productName, product.brand, product.price, product.category, images)
+        }
     }
+
 
     fun findById(id: Long): Product {
         return productRepository.findById(id).orElseThrow { RuntimeException("Product not found") }

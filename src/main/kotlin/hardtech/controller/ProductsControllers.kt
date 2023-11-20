@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException
 class ProductController(private val productService: ProductService) {
 
     @GetMapping
-    fun findAll(): ResponseEntity<List<Product>> {
+    fun findAll(): ResponseEntity<List<ProductDTO>> {
         val products = productService.findAll()
         return if (products.isNotEmpty()) {
             ResponseEntity.ok(products)
@@ -24,6 +24,7 @@ class ProductController(private val productService: ProductService) {
             ResponseEntity.noContent().build()
         }
     }
+
 
     @GetMapping("/{id}")
     fun findById(@PathVariable id: Long): ResponseEntity<Product> {
@@ -42,7 +43,11 @@ class ProductController(private val productService: ProductService) {
 
 @RestController
 @RequestMapping("/motherboardDetails")
-class MotherboardDetailsController(private val motherboardDetailsService: MotherboardDetailsService,private val productService: ProductService,private val imageService: ImageService) {
+class MotherboardDetailsController(
+    private val motherboardDetailsService: MotherboardDetailsService,
+    private val productService: ProductService,
+    private val imageService: ImageService
+) {
 
     @GetMapping("/{productId}")
     fun findByProductId(@PathVariable productId: Long): ResponseEntity<MotherboardDetails> {
@@ -66,18 +71,14 @@ class MotherboardDetailsController(private val motherboardDetailsService: Mother
 
 
     @PostMapping
-    fun save(@Valid @RequestPart("motherboardDetails") motherboardDetails: MotherboardDetails, @RequestPart("images") images: List<MultipartFile>): ResponseEntity<Any> {
+    fun save(
+        @Valid @RequestPart("motherboardDetails") motherboardDetails: MotherboardDetails,
+        @RequestPart("images") images: List<MultipartFile>
+    ): ResponseEntity<Any> {
         return try {
-            // Guarda el producto primero
             val savedProduct = productService.save(motherboardDetails.product!!)
-
-            // Guarda cada imagen y obtén la entidad Image
             val imageEntities = images.map { imageService.saveImage(it, savedProduct) }
-
-            // Asocia las imágenes con el producto
             savedProduct.images.addAll(imageEntities)
-
-            // Guarda los detalles de la placa base
             val savedMotherboardDetails = motherboardDetailsService.save(motherboardDetails)
 
             ResponseEntity.ok(savedMotherboardDetails)
@@ -107,6 +108,7 @@ class CoolingDetailsController(private val coolingDetailsService: CoolingDetails
             ResponseEntity.notFound().build()
         }
     }
+
     @PostMapping("/batch")
     fun save(@Valid @RequestBody coolingDetailsList: List<CoolingDetails>): ResponseEntity<Any> {
         return try {
@@ -141,6 +143,7 @@ class PowerSupplyDetailsController(private val powerSupplyDetailsService: PowerS
             ResponseEntity.notFound().build()
         }
     }
+
     @PostMapping("/batch")
     fun save(@Valid @RequestBody powerSupplyDetailsList: List<PowerSupplyDetails>): ResponseEntity<Any> {
         return try {
@@ -175,6 +178,7 @@ class ProcessorDetailsController(private val processorDetailsService: ProcessorD
             ResponseEntity.notFound().build()
         }
     }
+
     @PostMapping("/batch")
     fun save(@Valid @RequestBody processorDetailsList: List<ProcessorDetails>): ResponseEntity<Any> {
         return try {
@@ -244,6 +248,7 @@ class GraphicsCardDetailsController(private val graphicsCardDetailsService: Grap
             ResponseEntity.notFound().build()
         }
     }
+
     @PostMapping("/batch")
     fun save(@Valid @RequestBody graphicsCardDetailsList: List<GraphicsCardDetails>): ResponseEntity<Any> {
         return try {
@@ -253,6 +258,7 @@ class GraphicsCardDetailsController(private val graphicsCardDetailsService: Grap
             ResponseEntity.badRequest().body(e.message)
         }
     }
+
     @PostMapping
     fun save(@Valid @RequestBody graphicsCardDetails: GraphicsCardDetails): ResponseEntity<Any> {
         return try {
@@ -263,6 +269,7 @@ class GraphicsCardDetailsController(private val graphicsCardDetailsService: Grap
         }
     }
 }
+
 @RestController
 @RequestMapping("/storageDetails")
 class StorageDetailsController(private val storageDetailsService: StorageDetailsService) {
@@ -276,6 +283,7 @@ class StorageDetailsController(private val storageDetailsService: StorageDetails
             ResponseEntity.notFound().build()
         }
     }
+
     @PostMapping("/batch")
     fun save(@Valid @RequestBody storageDetailsList: List<StorageDetails>): ResponseEntity<Any> {
         return try {
@@ -285,6 +293,7 @@ class StorageDetailsController(private val storageDetailsService: StorageDetails
             ResponseEntity.badRequest().body(e.message)
         }
     }
+
     @PostMapping
     fun save(@Valid @RequestBody storageDetails: StorageDetails): ResponseEntity<Any> {
         return try {
@@ -307,7 +316,8 @@ class SalesHistoryController(private val salesHistoryService: SalesHistoryServic
             return salesHistoryService.findByProductId(productId)
         } catch (e: RuntimeException) {
             throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, "SalesHistory not found", e)
+                HttpStatus.NOT_FOUND, "SalesHistory not found", e
+            )
         }
     }
 
@@ -327,7 +337,8 @@ class OrdersController(private val ordersService: OrdersService) {
             return ordersService.findByUserId(userId)
         } catch (e: RuntimeException) {
             throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Orders not found", e)
+                HttpStatus.NOT_FOUND, "Orders not found", e
+            )
         }
     }
 
@@ -347,7 +358,8 @@ class OrderDetailsController(private val orderDetailsService: OrderDetailsServic
             return orderDetailsService.findByOrderId(orderId)
         } catch (e: RuntimeException) {
             throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, "OrderDetails not found", e)
+                HttpStatus.NOT_FOUND, "OrderDetails not found", e
+            )
         }
     }
 
