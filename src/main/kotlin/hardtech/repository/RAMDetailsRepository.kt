@@ -14,6 +14,13 @@ interface ProcessorDetailsRepository : JpaRepository<ProcessorDetails, Long>
 
 interface RAMDetailsRepository : JpaRepository<RAMDetails, Long>
 
+interface StorageDetailsRepository : JpaRepository<StorageDetails, Long>
+
+interface CoolingDetailsRepository : JpaRepository<CoolingDetails, Long>
+
+interface GraphicsCardDetailsRepository : JpaRepository<GraphicsCardDetails, Long>
+
+
 interface SalesHistoryRepository : JpaRepository<SalesHistory, Long>
 
 interface OrdersRepository : JpaRepository<Orders, Long>

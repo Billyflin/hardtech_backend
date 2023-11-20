@@ -3,10 +3,14 @@ package hardtech.service
 
 import hardtech.entity.*
 import hardtech.repository.*
+import hardtech.validator.ProductValidator
+import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.validation.BeanPropertyBindingResult
+
 
 @Service
-class ProductService(private val productRepository: ProductRepository) {
+class ProductService(private val productRepository: ProductRepository, private val productValidator: ProductValidator) {
 
     fun findAll(): List<Product> {
         return productRepository.findAll()
@@ -16,59 +20,143 @@ class ProductService(private val productRepository: ProductRepository) {
         return productRepository.findById(id).orElseThrow { RuntimeException("Product not found") }
     }
 
+    fun save(product: Product): Product {
+        val errors = BeanPropertyBindingResult(product, "product")
+        productValidator.validate(product, errors)
+        if (errors.hasErrors()) {
+            throw RuntimeException(errors.allErrors.joinToString(", "))
+        }
+        return productRepository.save(product)
+    }
+
     fun deleteById(id: Long) {
         return productRepository.deleteById(id)
     }
 }
+
 @Service
-class MotherboardDetailsService(private val motherboardDetailsRepository: MotherboardDetailsRepository) {
+class MotherboardDetailsService(
+    private val motherboardDetailsRepository: MotherboardDetailsRepository, private val productService: ProductService
+) {
 
     fun findByProductId(productId: Long): MotherboardDetails {
-        return motherboardDetailsRepository.findById(productId).orElseThrow { RuntimeException("MotherboardDetails not found") }
+        return motherboardDetailsRepository.findById(productId).orElseThrow {
+            EntityNotFoundException("No se encontraron detalles de la placa base para el producto con ID: $productId")
+        }
     }
 
     fun save(motherboardDetails: MotherboardDetails): MotherboardDetails {
+        val savedProduct = motherboardDetails.product?.let {
+            productService.save(it)
+        }
+        motherboardDetails.product = savedProduct
         return motherboardDetailsRepository.save(motherboardDetails)
     }
 }
+@Service
+class CoolingDetailsService(
+    private val coolingDetailsRepository: CoolingDetailsRepository,
+    private val productService: ProductService
+) {
 
+    fun findByProductId(productId: Long): CoolingDetails {
+        return coolingDetailsRepository.findById(productId).orElseThrow {
+            EntityNotFoundException("No se encontraron detalles de refrigeración para el producto con ID: $productId")
+        }
+    }
 
+    fun save(coolingDetails: CoolingDetails): CoolingDetails {
+        val savedProduct = coolingDetails.product?.let {
+            productService.save(it)
+        }
+        coolingDetails.product = savedProduct
+        return coolingDetailsRepository.save(coolingDetails)
+    }
+}
 
 @Service
-class PowerSupplyDetailsService(private val powerSupplyDetailsRepository: PowerSupplyDetailsRepository) {
+class PowerSupplyDetailsService(
+    private val powerSupplyDetailsRepository: PowerSupplyDetailsRepository,
+    private val productService: ProductService
+) {
 
     fun findByProductId(productId: Long): PowerSupplyDetails {
-        return powerSupplyDetailsRepository.findById(productId)
-            .orElseThrow { RuntimeException("PowerSupplyDetails not found") }
+        return powerSupplyDetailsRepository.findById(productId).orElseThrow {
+            EntityNotFoundException("No se encontraron detalles de la fuente de alimentación para el producto con ID: $productId")
+        }
     }
 
     fun save(powerSupplyDetails: PowerSupplyDetails): PowerSupplyDetails {
+        val savedProduct = powerSupplyDetails.product?.let {
+            productService.save(it)
+        }
+        powerSupplyDetails.product = savedProduct
         return powerSupplyDetailsRepository.save(powerSupplyDetails)
     }
 }
 
+// Similarmente para ProcessorDetails, RAMDetails y GraphicsCardDetails
+
 @Service
-class ProcessorDetailsService(private val processorDetailsRepository: ProcessorDetailsRepository) {
+class ProcessorDetailsService(
+    private val processorDetailsRepository: ProcessorDetailsRepository,
+    private val productService: ProductService
+) {
 
     fun findByProductId(productId: Long): ProcessorDetails {
-        return processorDetailsRepository.findById(productId)
-            .orElseThrow { RuntimeException("ProcessorDetails not found") }
+        return processorDetailsRepository.findById(productId).orElseThrow {
+            EntityNotFoundException("No se encontraron detalles del procesador para el producto con ID: $productId")
+        }
     }
 
     fun save(processorDetails: ProcessorDetails): ProcessorDetails {
+        val savedProduct = processorDetails.product?.let {
+            productService.save(it)
+        }
+        processorDetails.product = savedProduct
         return processorDetailsRepository.save(processorDetails)
     }
 }
 
 @Service
-class RAMDetailsService(private val ramDetailsRepository: RAMDetailsRepository) {
+class RAMDetailsService(
+    private val ramDetailsRepository: RAMDetailsRepository,
+    private val productService: ProductService
+) {
 
     fun findByProductId(productId: Long): RAMDetails {
-        return ramDetailsRepository.findById(productId).orElseThrow { RuntimeException("RAMDetails not found") }
+        return ramDetailsRepository.findById(productId).orElseThrow {
+            EntityNotFoundException("No se encontraron detalles de RAM para el producto con ID: $productId")
+        }
     }
 
     fun save(ramDetails: RAMDetails): RAMDetails {
+        val savedProduct = ramDetails.product?.let {
+            productService.save(it)
+        }
+        ramDetails.product = savedProduct
         return ramDetailsRepository.save(ramDetails)
+    }
+}
+
+@Service
+class GraphicsCardDetailsService(
+    private val graphicsCardDetailsRepository: GraphicsCardDetailsRepository,
+    private val productService: ProductService
+) {
+
+    fun findByProductId(productId: Long): GraphicsCardDetails {
+        return graphicsCardDetailsRepository.findById(productId).orElseThrow {
+            EntityNotFoundException("No se encontraron detalles de la tarjeta gráfica para el producto con ID: $productId")
+        }
+    }
+
+    fun save(graphicsCardDetails: GraphicsCardDetails): GraphicsCardDetails {
+        val savedProduct = graphicsCardDetails.product?.let {
+            productService.save(it)
+        }
+        graphicsCardDetails.product = savedProduct
+        return graphicsCardDetailsRepository.save(graphicsCardDetails)
     }
 }
 

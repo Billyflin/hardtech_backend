@@ -6,75 +6,66 @@ package hardtech.entity
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import java.time.LocalDateTime
 
 @Entity
 @Table(name = "categories")
 data class Categories(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val categoryId: Long = 0,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val categoryId: Long = 0,
 
-    @Column(unique = true)
-    val categoryName: String
+    @Column(unique = true) val categoryName: String
 )
 
 @Entity
 @Table(name = "product")
 data class Product(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val productId: Long = 0,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val productId: Long = 0,
 
-    @Column(unique = true)
-    val productName: String,
+    @Column(unique = true) @field:NotBlank(message = "El nombre del producto no puede estar vacío") val productName: String,
 
-    val brand: String,
+    @field:NotBlank(message = "La marca no puede estar vacía") val brand: String,
 
-    val price: Double,
+    @field:Min(value = 0, message = "El precio debe ser un número positivo") val price: Double,
 
-    @ManyToOne
-    @JoinColumn(name = "categoryId")
-    @JsonManagedReference
-    val category: Categories,
+    @ManyToOne @JoinColumn(name = "categoryId") @JsonManagedReference @field:NotNull(message = "La categoría no puede ser nula") val category: Categories,
 
-    @OneToOne(cascade = [CascadeType.ALL], mappedBy = "product")
-    @JsonBackReference
-    val motherboardDetails: MotherboardDetails? = null
+    @OneToOne(
+        cascade = [CascadeType.ALL], mappedBy = "product"
+    ) @JsonBackReference val motherboardDetails: MotherboardDetails? = null
 )
 
 @Entity
 @Table(name = "motherboard_details")
 data class MotherboardDetails(
-    @Id
-    val productId: Long = 0,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val productId: Long = 0,
 
-    val chipset: String,
+    @Column(nullable = false) val chipset: String,
 
-    val formFactor: String,
+    @Column(nullable = false) val formFactor: String,
 
-    val memorySlots: Int,
+    @Column(nullable = false) val memorySlots: Int,
 
-    val memoryType: String,
+    @Column(nullable = false) val memoryType: String,
 
-    val m2Slots: Int,
+    @Column(nullable = false) val m2Slots: Int,
 
-    val pciEx16Slots: Int,
+    @Column(nullable = false) val pciEx16Slots: Int,
 
-    val pciEx1Slots: Int,
+    @Column(nullable = false) val pciEx1Slots: Int,
 
-    val sata3Ports: Int,
+    @Column(nullable = false) val sata3Ports: Int,
 
-    val socket: String,
+    @Column(nullable = false) val socket: String,
 
-    val usb2Ports: Int,
+    @Column(nullable = false) val usb2Ports: Int,
 
-    val usb3Ports: Int,
+    @Column(nullable = false) val usb3Ports: Int,
 
-    @OneToOne
-    @JoinColumn(name = "productId")
-    @JsonManagedReference
-    val product: Product? = null
+    @OneToOne @MapsId @JoinColumn(name = "productId") @JsonManagedReference var product: Product? = null
+
 )
 
 
@@ -93,7 +84,7 @@ data class CoolingDetails(
 
     @Column(nullable = false) val noiseLevel: Int = 0,
 
-    @OneToOne(fetch = FetchType.LAZY) val product: Product? = null
+    @OneToOne @MapsId @JoinColumn(name = "id") var product: Product? = null
 )
 
 @Entity
@@ -110,8 +101,7 @@ data class PowerSupplyDetails(
     @Column(nullable = false) val modular: Boolean = false,
 
     @Column(nullable = false) val power: Double = 0.0,
-
-    @OneToOne(fetch = FetchType.LAZY) @MapsId val product: Product? = null
+    @OneToOne @MapsId @JoinColumn(name = "id") var product: Product? = null
 )
 
 @Entity
@@ -130,8 +120,7 @@ data class ProcessorDetails(
     @Column(nullable = false) val tdp: Int = 0,
 
     @Column(nullable = false) val threads: Int = 0,
-
-    @OneToOne(fetch = FetchType.LAZY) @MapsId val product: Product? = null
+    @OneToOne @MapsId @JoinColumn(name = "id") var product: Product? = null
 )
 
 @Entity
@@ -154,8 +143,29 @@ data class RAMDetails(
     @Column(nullable = false) val size: Int = 0,
 
     @Column(nullable = false) val voltage: Double = 0.0,
+    @OneToOne @MapsId @JoinColumn(name = "id") var product: Product? = null
+)
+@Entity
+@Table(name = "Storage_Details")
+data class StorageDetails(
+    @Id val id: Long = 0,
 
-    @OneToOne(fetch = FetchType.LAZY) @MapsId val product: Product? = null
+    @Column(nullable = false) val capacity: Int = 0,
+
+    @Column(nullable = false) val formFactor: String = "",
+
+    @Column(nullable = false) val interfaceType: String = "",
+
+    @Column(nullable = false) val m2: Boolean = false,
+
+    @Column(nullable = false) val nvme: Boolean = false,
+
+    @Column(nullable = false) val rpm: Int = 0,
+
+    @Column(nullable = false) val size: Int = 0,
+
+    @Column(nullable = false) val type: String = "",
+    @OneToOne @MapsId @JoinColumn(name = "id") var product: Product? = null
 )
 
 @Entity
@@ -181,7 +191,7 @@ data class GraphicsCardDetails(
 
     @Column(nullable = false) val vga: Int = 0,
 
-    @OneToOne(fetch = FetchType.LAZY) @MapsId val product: Product? = null
+    @OneToOne @MapsId @JoinColumn(name = "id") var product: Product? = null
 )
 
 @Entity
@@ -222,9 +232,7 @@ data class Orders(
     @Column(nullable = false) val orderStatus: String = "",
 
     @OneToMany(
-        mappedBy = "order",
-        cascade = [CascadeType.ALL],
-        orphanRemoval = true
+        mappedBy = "order", cascade = [CascadeType.ALL], orphanRemoval = true
     ) val orderDetails: List<OrderDetails> = mutableListOf()
 )
 

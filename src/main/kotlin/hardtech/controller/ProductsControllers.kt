@@ -2,7 +2,10 @@ package hardtech.controller
 
 import hardtech.entity.*
 import hardtech.service.*
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
@@ -11,23 +14,27 @@ import org.springframework.web.server.ResponseStatusException
 class ProductController(private val productService: ProductService) {
 
     @GetMapping
-    fun findAll(): List<Product> {
-        return productService.findAll()
+    fun findAll(): ResponseEntity<List<Product>> {
+        val products = productService.findAll()
+        return if (products.isNotEmpty()) {
+            ResponseEntity.ok(products)
+        } else {
+            ResponseEntity.noContent().build()
+        }
     }
 
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: Long): Product {
-        try {
-            return productService.findById(id)
-        } catch (e: RuntimeException) {
-            throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Product not found", e)
+    fun findById(@PathVariable id: Long): ResponseEntity<Product> {
+        return productService.findById(id).let {
+            ResponseEntity.ok(it)
         }
     }
 
     @DeleteMapping("/{id}")
-    fun deleteById(@PathVariable id: Long) {
-        productService.deleteById(id)
+    fun deleteById(@PathVariable id: Long): ResponseEntity<Void> {
+        return productService.deleteById(id).let {
+            ResponseEntity.noContent().build()
+        }
     }
 }
 
@@ -36,39 +43,78 @@ class ProductController(private val productService: ProductService) {
 class MotherboardDetailsController(private val motherboardDetailsService: MotherboardDetailsService) {
 
     @GetMapping("/{productId}")
-    fun findByProductId(@PathVariable productId: Long): MotherboardDetails {
-        try {
-            return motherboardDetailsService.findByProductId(productId)
+    fun findByProductId(@PathVariable productId: Long): ResponseEntity<MotherboardDetails> {
+        return try {
+            val motherboardDetails = motherboardDetailsService.findByProductId(productId)
+            ResponseEntity.ok(motherboardDetails)
         } catch (e: RuntimeException) {
-            throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, "MotherboardDetails not found", e)
+            ResponseEntity.notFound().build()
         }
     }
 
     @PostMapping
-    fun save(@RequestBody motherboardDetails: MotherboardDetails): MotherboardDetails {
-        return motherboardDetailsService.save(motherboardDetails)
+    fun save(@Valid @RequestBody motherboardDetails: MotherboardDetails): ResponseEntity<Any> {
+        return try {
+            val savedMotherboardDetails = motherboardDetailsService.save(motherboardDetails)
+            ResponseEntity.ok(savedMotherboardDetails)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
     }
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleHttpMessageNotReadableException(): ResponseEntity<String> {
+        return ResponseEntity.badRequest().body("Falta un campo requerido en la solicitud")
+    }
+
 }
 
+@RestController
+@RequestMapping("/coolingDetails")
+class CoolingDetailsController(private val coolingDetailsService: CoolingDetailsService) {
+
+    @GetMapping("/{productId}")
+    fun findByProductId(@PathVariable productId: Long): ResponseEntity<CoolingDetails> {
+        return try {
+            val coolingDetails = coolingDetailsService.findByProductId(productId)
+            ResponseEntity.ok(coolingDetails)
+        } catch (e: RuntimeException) {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @PostMapping
+    fun save(@Valid @RequestBody coolingDetails: CoolingDetails): ResponseEntity<Any> {
+        return try {
+            val savedCoolingDetails = coolingDetailsService.save(coolingDetails)
+            ResponseEntity.ok(savedCoolingDetails)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
+    }
+}
 
 @RestController
 @RequestMapping("/powerSupplyDetails")
 class PowerSupplyDetailsController(private val powerSupplyDetailsService: PowerSupplyDetailsService) {
 
     @GetMapping("/{productId}")
-    fun findByProductId(@PathVariable productId: Long): PowerSupplyDetails {
-        try {
-            return powerSupplyDetailsService.findByProductId(productId)
+    fun findByProductId(@PathVariable productId: Long): ResponseEntity<PowerSupplyDetails> {
+        return try {
+            val powerSupplyDetails = powerSupplyDetailsService.findByProductId(productId)
+            ResponseEntity.ok(powerSupplyDetails)
         } catch (e: RuntimeException) {
-            throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, "PowerSupplyDetails not found", e)
+            ResponseEntity.notFound().build()
         }
     }
 
     @PostMapping
-    fun save(@RequestBody powerSupplyDetails: PowerSupplyDetails): PowerSupplyDetails {
-        return powerSupplyDetailsService.save(powerSupplyDetails)
+    fun save(@Valid @RequestBody powerSupplyDetails: PowerSupplyDetails): ResponseEntity<Any> {
+        return try {
+            val savedPowerSupplyDetails = powerSupplyDetailsService.save(powerSupplyDetails)
+            ResponseEntity.ok(savedPowerSupplyDetails)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
     }
 }
 
@@ -77,40 +123,76 @@ class PowerSupplyDetailsController(private val powerSupplyDetailsService: PowerS
 class ProcessorDetailsController(private val processorDetailsService: ProcessorDetailsService) {
 
     @GetMapping("/{productId}")
-    fun findByProductId(@PathVariable productId: Long): ProcessorDetails {
-        try {
-            return processorDetailsService.findByProductId(productId)
+    fun findByProductId(@PathVariable productId: Long): ResponseEntity<ProcessorDetails> {
+        return try {
+            val processorDetails = processorDetailsService.findByProductId(productId)
+            ResponseEntity.ok(processorDetails)
         } catch (e: RuntimeException) {
-            throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, "ProcessorDetails not found", e)
+            ResponseEntity.notFound().build()
         }
     }
 
     @PostMapping
-    fun save(@RequestBody processorDetails: ProcessorDetails): ProcessorDetails {
-        return processorDetailsService.save(processorDetails)
+    fun save(@Valid @RequestBody processorDetails: ProcessorDetails): ResponseEntity<Any> {
+        return try {
+            val savedProcessorDetails = processorDetailsService.save(processorDetails)
+            ResponseEntity.ok(savedProcessorDetails)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
     }
 }
 
 @RestController
-@RequestMapping("/ramDetails")
+@RequestMapping("/RAMDetails")
 class RAMDetailsController(private val ramDetailsService: RAMDetailsService) {
 
     @GetMapping("/{productId}")
-    fun findByProductId(@PathVariable productId: Long): RAMDetails {
-        try {
-            return ramDetailsService.findByProductId(productId)
+    fun findByProductId(@PathVariable productId: Long): ResponseEntity<RAMDetails> {
+        return try {
+            val ramDetails = ramDetailsService.findByProductId(productId)
+            ResponseEntity.ok(ramDetails)
         } catch (e: RuntimeException) {
-            throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, "RAMDetails not found", e)
+            ResponseEntity.notFound().build()
         }
     }
 
     @PostMapping
-    fun save(@RequestBody ramDetails: RAMDetails): RAMDetails {
-        return ramDetailsService.save(ramDetails)
+    fun save(@Valid @RequestBody ramDetails: RAMDetails): ResponseEntity<Any> {
+        return try {
+            val savedRAMDetails = ramDetailsService.save(ramDetails)
+            ResponseEntity.ok(savedRAMDetails)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
     }
 }
+
+@RestController
+@RequestMapping("/graphicsCardDetails")
+class GraphicsCardDetailsController(private val graphicsCardDetailsService: GraphicsCardDetailsService) {
+
+    @GetMapping("/{productId}")
+    fun findByProductId(@PathVariable productId: Long): ResponseEntity<GraphicsCardDetails> {
+        return try {
+            val graphicsCardDetails = graphicsCardDetailsService.findByProductId(productId)
+            ResponseEntity.ok(graphicsCardDetails)
+        } catch (e: RuntimeException) {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @PostMapping
+    fun save(@Valid @RequestBody graphicsCardDetails: GraphicsCardDetails): ResponseEntity<Any> {
+        return try {
+            val savedGraphicsCardDetails = graphicsCardDetailsService.save(graphicsCardDetails)
+            ResponseEntity.ok(savedGraphicsCardDetails)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
+    }
+}
+
 @RestController
 @RequestMapping("/salesHistory")
 class SalesHistoryController(private val salesHistoryService: SalesHistoryService) {
