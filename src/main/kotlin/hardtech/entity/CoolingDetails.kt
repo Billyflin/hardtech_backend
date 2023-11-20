@@ -34,9 +34,33 @@ data class Product(
 
     @OneToOne(
         cascade = [CascadeType.ALL], mappedBy = "product"
-    ) @JsonBackReference val motherboardDetails: MotherboardDetails? = null
+    ) @JsonBackReference val motherboardDetails: MotherboardDetails? = null,
+
+    @Column(nullable = false) val stock: Int = 0,
+
+    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
+    @JsonManagedReference
+    val images: MutableList<Image> = mutableListOf()
+
 )
 
+@Entity
+@Table(name = "image")
+data class Image(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val imageId: Long = 0,
+
+    @Lob
+    @Column
+    val imageData: ByteArray,
+
+
+    @ManyToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "productId")
+    @JsonBackReference
+    val product: Product
+)
 @Entity
 @Table(name = "motherboard_details")
 data class MotherboardDetails(

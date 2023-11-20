@@ -16,7 +16,7 @@ data class MotherboardDetailsDto(
     val usb2Ports: Int,
     val usb3Ports: Int,
     val product: ProductDto,
-    val category: CategoryDto  // Añade este campo
+    val category: CategoryDto
 )
 
 data class CategoryDto(

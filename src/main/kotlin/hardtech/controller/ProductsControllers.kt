@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
+
 
 @RestController
 @RequestMapping("/products")
@@ -40,7 +42,7 @@ class ProductController(private val productService: ProductService) {
 
 @RestController
 @RequestMapping("/motherboardDetails")
-class MotherboardDetailsController(private val motherboardDetailsService: MotherboardDetailsService) {
+class MotherboardDetailsController(private val motherboardDetailsService: MotherboardDetailsService,private val productService: ProductService,private val imageService: ImageService) {
 
     @GetMapping("/{productId}")
     fun findByProductId(@PathVariable productId: Long): ResponseEntity<MotherboardDetails> {
@@ -51,6 +53,7 @@ class MotherboardDetailsController(private val motherboardDetailsService: Mother
             ResponseEntity.notFound().build()
         }
     }
+
     @PostMapping("/batch")
     fun save(@Valid @RequestBody motherboardDetailsList: List<MotherboardDetails>): ResponseEntity<Any> {
         return try {
@@ -61,15 +64,28 @@ class MotherboardDetailsController(private val motherboardDetailsService: Mother
         }
     }
 
+
     @PostMapping
-    fun save(@Valid @RequestBody motherboardDetails: MotherboardDetails): ResponseEntity<Any> {
+    fun save(@Valid @RequestPart("motherboardDetails") motherboardDetails: MotherboardDetails, @RequestPart("images") images: List<MultipartFile>): ResponseEntity<Any> {
         return try {
+            // Guarda el producto primero
+            val savedProduct = productService.save(motherboardDetails.product!!)
+
+            // Guarda cada imagen y obtén la entidad Image
+            val imageEntities = images.map { imageService.saveImage(it, savedProduct) }
+
+            // Asocia las imágenes con el producto
+            savedProduct.images.addAll(imageEntities)
+
+            // Guarda los detalles de la placa base
             val savedMotherboardDetails = motherboardDetailsService.save(motherboardDetails)
+
             ResponseEntity.ok(savedMotherboardDetails)
         } catch (e: RuntimeException) {
             ResponseEntity.badRequest().body(e.message)
         }
     }
+
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleHttpMessageNotReadableException(): ResponseEntity<String> {
@@ -247,6 +263,39 @@ class GraphicsCardDetailsController(private val graphicsCardDetailsService: Grap
         }
     }
 }
+@RestController
+@RequestMapping("/storageDetails")
+class StorageDetailsController(private val storageDetailsService: StorageDetailsService) {
+
+    @GetMapping("/{productId}")
+    fun findByProductId(@PathVariable productId: Long): ResponseEntity<StorageDetails> {
+        return try {
+            val storageDetails = storageDetailsService.findByProductId(productId)
+            ResponseEntity.ok(storageDetails)
+        } catch (e: RuntimeException) {
+            ResponseEntity.notFound().build()
+        }
+    }
+    @PostMapping("/batch")
+    fun save(@Valid @RequestBody storageDetailsList: List<StorageDetails>): ResponseEntity<Any> {
+        return try {
+            val savedStorageDetailsList = storageDetailsList.map { storageDetailsService.save(it) }
+            ResponseEntity.ok(savedStorageDetailsList)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
+    }
+    @PostMapping
+    fun save(@Valid @RequestBody storageDetails: StorageDetails): ResponseEntity<Any> {
+        return try {
+            val savedStorageDetails = storageDetailsService.save(storageDetails)
+            ResponseEntity.ok(savedStorageDetails)
+        } catch (e: RuntimeException) {
+            ResponseEntity.badRequest().body(e.message)
+        }
+    }
+}
+
 
 @RestController
 @RequestMapping("/salesHistory")

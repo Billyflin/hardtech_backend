@@ -26,4 +26,6 @@ interface SalesHistoryRepository : JpaRepository<SalesHistory, Long>
 interface OrdersRepository : JpaRepository<Orders, Long>
 
 interface OrderDetailsRepository : JpaRepository<OrderDetails, Long>
-interface CategoryRepository : JpaRepository<Categories, Long>
+
+interface ImageRepository : JpaRepository<Image, Long>
+

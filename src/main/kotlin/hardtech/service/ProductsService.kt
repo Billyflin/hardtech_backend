@@ -7,6 +7,7 @@ import hardtech.validator.ProductValidator
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.web.multipart.MultipartFile
 
 
 @Service
@@ -35,6 +36,16 @@ class ProductService(private val productRepository: ProductRepository, private v
 }
 
 @Service
+class ImageService(private val imageRepository: ImageRepository) {
+
+    fun saveImage(image: MultipartFile, product: Product): Image {
+        val bytes = image.bytes
+        val imageEntity = Image(imageData = bytes, product = product)
+        return imageRepository.save(imageEntity)
+    }
+}
+
+@Service
 class MotherboardDetailsService(
     private val motherboardDetailsRepository: MotherboardDetailsRepository, private val productService: ProductService
 ) {
@@ -53,10 +64,10 @@ class MotherboardDetailsService(
         return motherboardDetailsRepository.save(motherboardDetails)
     }
 }
+
 @Service
 class CoolingDetailsService(
-    private val coolingDetailsRepository: CoolingDetailsRepository,
-    private val productService: ProductService
+    private val coolingDetailsRepository: CoolingDetailsRepository, private val productService: ProductService
 ) {
 
     fun findByProductId(productId: Long): CoolingDetails {
@@ -76,8 +87,7 @@ class CoolingDetailsService(
 
 @Service
 class PowerSupplyDetailsService(
-    private val powerSupplyDetailsRepository: PowerSupplyDetailsRepository,
-    private val productService: ProductService
+    private val powerSupplyDetailsRepository: PowerSupplyDetailsRepository, private val productService: ProductService
 ) {
 
     fun findByProductId(productId: Long): PowerSupplyDetails {
@@ -99,8 +109,7 @@ class PowerSupplyDetailsService(
 
 @Service
 class ProcessorDetailsService(
-    private val processorDetailsRepository: ProcessorDetailsRepository,
-    private val productService: ProductService
+    private val processorDetailsRepository: ProcessorDetailsRepository, private val productService: ProductService
 ) {
 
     fun findByProductId(productId: Long): ProcessorDetails {
@@ -118,10 +127,30 @@ class ProcessorDetailsService(
     }
 }
 
+
+@Service
+class StorageDetailsService(
+    private val storageDetailsRepository: StorageDetailsRepository, private val productService: ProductService
+) {
+    fun findByProductId(productId: Long): StorageDetails {
+        return storageDetailsRepository.findById(productId).orElseThrow {
+            EntityNotFoundException("No se encontraron detalles del almacenamiento para el producto con ID: $productId")
+        }
+    }
+
+    fun save(storageDetails: StorageDetails): StorageDetails {
+        val savedProduct = storageDetails.product?.let {
+            productService.save(it)
+        }
+        storageDetails.product = savedProduct
+        return storageDetailsRepository.save(storageDetails)
+    }
+
+}
+
 @Service
 class RAMDetailsService(
-    private val ramDetailsRepository: RAMDetailsRepository,
-    private val productService: ProductService
+    private val ramDetailsRepository: RAMDetailsRepository, private val productService: ProductService
 ) {
 
     fun findByProductId(productId: Long): RAMDetails {
@@ -141,8 +170,7 @@ class RAMDetailsService(
 
 @Service
 class GraphicsCardDetailsService(
-    private val graphicsCardDetailsRepository: GraphicsCardDetailsRepository,
-    private val productService: ProductService
+    private val graphicsCardDetailsRepository: GraphicsCardDetailsRepository, private val productService: ProductService
 ) {
 
     fun findByProductId(productId: Long): GraphicsCardDetails {
