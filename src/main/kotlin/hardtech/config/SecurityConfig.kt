@@ -41,7 +41,8 @@ class SecurityConfig(
             .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter::class.java)
 
             .exceptionHandling {
-                it.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler)
+                it.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .accessDeniedHandler(jwtAccessDeniedHandler)
             }
 
             .authorizeHttpRequests {
@@ -56,7 +57,8 @@ class SecurityConfig(
                     "/ramDetails"
                 ).permitAll()
 
-                    .requestMatchers(PathRequest.toH2Console()).permitAll().requestMatchers("/api/**").hasRole("USER")
+                    .requestMatchers(PathRequest.toH2Console()).permitAll()
+//                    .requestMatchers("/api/**").hasRole("USER")
                     .anyRequest().authenticated()
             }
 

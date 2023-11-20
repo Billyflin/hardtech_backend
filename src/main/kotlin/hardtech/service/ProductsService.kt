@@ -16,15 +16,10 @@ class ProductService(private val productRepository: ProductRepository) {
         return productRepository.findById(id).orElseThrow { RuntimeException("Product not found") }
     }
 
-    fun save(product: Product): Product {
-        return productRepository.save(product)
-    }
-
     fun deleteById(id: Long) {
         return productRepository.deleteById(id)
     }
 }
-
 @Service
 class MotherboardDetailsService(private val motherboardDetailsRepository: MotherboardDetailsRepository) {
 
@@ -37,11 +32,14 @@ class MotherboardDetailsService(private val motherboardDetailsRepository: Mother
     }
 }
 
+
+
 @Service
 class PowerSupplyDetailsService(private val powerSupplyDetailsRepository: PowerSupplyDetailsRepository) {
 
     fun findByProductId(productId: Long): PowerSupplyDetails {
-        return powerSupplyDetailsRepository.findById(productId).orElseThrow { RuntimeException("PowerSupplyDetails not found") }
+        return powerSupplyDetailsRepository.findById(productId)
+            .orElseThrow { RuntimeException("PowerSupplyDetails not found") }
     }
 
     fun save(powerSupplyDetails: PowerSupplyDetails): PowerSupplyDetails {
@@ -53,7 +51,8 @@ class PowerSupplyDetailsService(private val powerSupplyDetailsRepository: PowerS
 class ProcessorDetailsService(private val processorDetailsRepository: ProcessorDetailsRepository) {
 
     fun findByProductId(productId: Long): ProcessorDetails {
-        return processorDetailsRepository.findById(productId).orElseThrow { RuntimeException("ProcessorDetails not found") }
+        return processorDetailsRepository.findById(productId)
+            .orElseThrow { RuntimeException("ProcessorDetails not found") }
     }
 
     fun save(processorDetails: ProcessorDetails): ProcessorDetails {
@@ -70,5 +69,41 @@ class RAMDetailsService(private val ramDetailsRepository: RAMDetailsRepository) 
 
     fun save(ramDetails: RAMDetails): RAMDetails {
         return ramDetailsRepository.save(ramDetails)
+    }
+}
+
+@Service
+class SalesHistoryService(private val salesHistoryRepository: SalesHistoryRepository) {
+
+    fun findByProductId(productId: Long): SalesHistory {
+        return salesHistoryRepository.findById(productId).orElseThrow { RuntimeException("SalesHistory not found") }
+    }
+
+    fun save(salesHistory: SalesHistory): SalesHistory {
+        return salesHistoryRepository.save(salesHistory)
+    }
+}
+
+@Service
+class OrdersService(private val ordersRepository: OrdersRepository) {
+
+    fun findByUserId(userId: Long): Orders {
+        return ordersRepository.findById(userId).orElseThrow { RuntimeException("Orders not found") }
+    }
+
+    fun save(orders: Orders): Orders {
+        return ordersRepository.save(orders)
+    }
+}
+
+@Service
+class OrderDetailsService(private val orderDetailsRepository: OrderDetailsRepository) {
+
+    fun findByOrderId(orderId: Long): OrderDetails {
+        return orderDetailsRepository.findById(orderId).orElseThrow { RuntimeException("OrderDetails not found") }
+    }
+
+    fun save(orderDetails: OrderDetails): OrderDetails {
+        return orderDetailsRepository.save(orderDetails)
     }
 }
