@@ -1,6 +1,6 @@
 package hardtech.service
 
-import hardtech.entity.PowerSupplyDetails
+import hardtech.entity.products.PowerSupplyDetails
 import hardtech.repository.PowerSupplyDetailsRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service

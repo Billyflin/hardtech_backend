@@ -1,6 +1,6 @@
 package hardtech.service
 
-import hardtech.entity.GraphicsCardDetails
+import hardtech.entity.products.GraphicsCardDetails
 import hardtech.repository.GraphicsCardDetailsRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service

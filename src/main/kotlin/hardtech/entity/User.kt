@@ -19,6 +19,21 @@ class User(
     @Column(name = "nickname", length = 50)
     var nickname: String? = null,
 
+    @Column(name = "email", length = 50, unique = true)
+    var email: String? = null,
+
+    @Column(name = "phone", length = 50)
+    var phone: String? = null,
+
+    @Column(name = "address", length = 50)
+    var address: String? = null,
+
+    @Column(name = "city", length = 50)
+    var city: String? = null,
+
+    @Column(name = "country", length = 50)
+    var country: String? = null,
+
     @Column(name = "activated")
     var isActivated: Boolean = false,
 

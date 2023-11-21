@@ -1,6 +1,6 @@
 package hardtech.service
 
-import hardtech.entity.MotherboardDetails
+import hardtech.entity.products.MotherboardDetails
 import hardtech.repository.MotherboardDetailsRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service

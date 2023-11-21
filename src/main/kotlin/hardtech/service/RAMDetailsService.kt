@@ -1,6 +1,6 @@
 package hardtech.service
 
-import hardtech.entity.RAMDetails
+import hardtech.entity.products.RAMDetails
 import hardtech.repository.RAMDetailsRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service

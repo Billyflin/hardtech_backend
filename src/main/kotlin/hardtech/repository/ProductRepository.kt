@@ -1,6 +1,7 @@
 package hardtech.repository
 
 import hardtech.entity.*
+import hardtech.entity.products.*
 import org.springframework.data.jpa.repository.JpaRepository
 
 

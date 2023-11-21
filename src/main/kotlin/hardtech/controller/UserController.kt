@@ -1,15 +1,16 @@
 package hardtech.controller
 
+import hardtech.dto.UserDto
+import hardtech.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
-import hardtech.dto.UserDto
-import hardtech.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.io.IOException
 
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/api")
 class UserController(

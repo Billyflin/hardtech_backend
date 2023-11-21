@@ -1,5 +1,6 @@
-package hardtech.entity
+package hardtech.entity.products
 
+import hardtech.entity.Product
 import jakarta.persistence.*
 
 @Entity

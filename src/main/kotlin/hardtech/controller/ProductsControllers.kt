@@ -2,6 +2,7 @@ package hardtech.controller
 
 import hardtech.dto.ProductDTO
 import hardtech.entity.*
+import hardtech.entity.products.*
 import hardtech.service.*
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
 
-
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/products")
 class ProductController(private val productService: ProductService) {
@@ -43,6 +44,7 @@ class ProductController(private val productService: ProductService) {
     }
 }
 
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/motherboardDetails")
 class MotherboardDetailsController(
@@ -96,7 +98,7 @@ class MotherboardDetailsController(
     }
 
 }
-
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/coolingDetails")
 class CoolingDetailsController(
@@ -142,10 +144,12 @@ class CoolingDetailsController(
         }
     }
 }
-
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/powerSupplyDetails")
-class PowerSupplyDetailsController(private val powerSupplyDetailsService: PowerSupplyDetailsService) {
+class PowerSupplyDetailsController(private val powerSupplyDetailsService: PowerSupplyDetailsService,
+                                   private val productService: ProductService,
+                                   private val imageService: ImageService) {
 
     @GetMapping("/{productId}")
     fun findByProductId(@PathVariable productId: Long): ResponseEntity<PowerSupplyDetails> {
@@ -168,16 +172,29 @@ class PowerSupplyDetailsController(private val powerSupplyDetailsService: PowerS
     }
 
     @PostMapping
-    fun save(@Valid @RequestBody powerSupplyDetails: PowerSupplyDetails): ResponseEntity<Any> {
+    fun save(
+        @Valid @RequestPart("powerSupplyDetails") powerSupplyDetails: PowerSupplyDetails,
+        @RequestPart("images") images: List<MultipartFile>
+    ): ResponseEntity<Any> {
         return try {
+            val savedProduct = productService.save(powerSupplyDetails.product!!)
+            val imageEntities = images.map { imageService.saveImage(it, savedProduct) }
+            savedProduct.images.addAll(imageEntities)
             val savedPowerSupplyDetails = powerSupplyDetailsService.save(powerSupplyDetails)
+
             ResponseEntity.ok(savedPowerSupplyDetails)
         } catch (e: RuntimeException) {
             ResponseEntity.badRequest().body(e.message)
         }
     }
-}
 
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleHttpMessageNotReadableException(): ResponseEntity<String> {
+        return ResponseEntity.badRequest().body("Falta un campo requerido en la solicitud")
+    }
+
+}
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/processorDetails")
 class ProcessorDetailsController(
@@ -230,7 +247,7 @@ class ProcessorDetailsController(
 
 }
 
-
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/RAMDetails")
 class RAMDetailsController(
@@ -282,7 +299,7 @@ class RAMDetailsController(
     }
 
 }
-
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/graphicsCardDetails")
 class GraphicsCardDetailsController(
@@ -334,7 +351,7 @@ class GraphicsCardDetailsController(
     }
 
 }
-
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/storageDetails")
 class StorageDetailsController(
@@ -386,7 +403,7 @@ class StorageDetailsController(
     }
 
 }
-
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/salesHistory")
 class SalesHistoryController(private val salesHistoryService: SalesHistoryService) {
@@ -407,7 +424,7 @@ class SalesHistoryController(private val salesHistoryService: SalesHistoryServic
         return salesHistoryService.save(salesHistory)
     }
 }
-
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/orders")
 class OrdersController(private val ordersService: OrdersService) {
@@ -428,7 +445,7 @@ class OrdersController(private val ordersService: OrdersService) {
         return ordersService.save(orders)
     }
 }
-
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/orderDetails")
 class OrderDetailsController(private val orderDetailsService: OrderDetailsService) {

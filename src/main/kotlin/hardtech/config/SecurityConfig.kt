@@ -41,8 +41,7 @@ class SecurityConfig(
             .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter::class.java)
 
             .exceptionHandling {
-                it.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                    .accessDeniedHandler(jwtAccessDeniedHandler)
+                it.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler)
             }
 
             .authorizeHttpRequests {
@@ -50,11 +49,19 @@ class SecurityConfig(
                     "/api/hello",
                     "/api/authenticate",
                     "/api/signup",
+                    "/api/signin",
                     "/products",
-                    "/motherboardDetails",
-                    "/powerSupplyDetails",
+                    "/products/**",
+                    "/motherboardDetails/**",
+                    "/coolingDetails/**",
+                    "/powerSupplyDetails/**",
+                    "/processorDetails/**",
+                    "/RAMDetails/**",
+                    "/graphicsCardDetails/**",
+                    "/storageDetails/**",
                     "/processorDetails",
                     "/ramDetails"
+
                 ).permitAll()
 
                     .requestMatchers(PathRequest.toH2Console()).permitAll()

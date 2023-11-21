@@ -1,6 +1,6 @@
 package hardtech.service
 
-import hardtech.entity.ProcessorDetails
+import hardtech.entity.products.ProcessorDetails
 import hardtech.repository.ProcessorDetailsRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service

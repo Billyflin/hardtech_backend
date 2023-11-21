@@ -1,0 +1,48 @@
+[
+  {
+    "id": 1,
+    "blockRGB": true,
+    "fanRPM": 2000,
+    "fanSize": 120,
+    "fans": 2,
+    "noiseLevel": 30,
+    "product": {
+      "productId": 1,
+      "productName": "Producto de prueba 1",
+      "brand": "Marca de prueba",
+      "price": 100.0,
+      "category": {
+        "categoryId": 1,
+        "categoryName": "Cooling"
+      },
+      "stock": 0,
+      "images": []
+    }
+  },
+  {
+    "productId": 4,
+    "chipset": "Chipset de prueba",
+    "formFactor": "FormFactor de prueba",
+    "memorySlots": 4,
+    "memoryType": "DDR4",
+    "m2Slots": 2,
+    "pciEx16Slots": 2,
+    "pciEx1Slots": 3,
+    "sata3Ports": 6,
+    "socket": "Socket de prueba",
+    "usb2Ports": 4,
+    "usb3Ports": 2,
+    "product": {
+      "productId": 4,
+      "productName": "Producto de prueba 3132",
+      "brand": "Marca de prueba",
+      "price": 100.0,
+      "category": {
+        "categoryId": 4,
+        "categoryName": "Categoría de prueba"
+      },
+      "stock": 0,
+      "images": [{},{},{}]
+    }
+  }
+]

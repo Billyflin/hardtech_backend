@@ -167,3 +167,4 @@ FROM
 GROUP BY
     p.ProductName;
 -- Tabla de Categorías
+

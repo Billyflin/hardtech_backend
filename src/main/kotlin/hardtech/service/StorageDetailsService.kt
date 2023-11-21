@@ -1,6 +1,6 @@
 package hardtech.service
 
-import hardtech.entity.StorageDetails
+import hardtech.entity.products.StorageDetails
 import hardtech.repository.StorageDetailsRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service

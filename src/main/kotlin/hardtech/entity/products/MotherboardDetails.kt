@@ -1,6 +1,7 @@
-package hardtech.entity
+package hardtech.entity.products
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import hardtech.entity.Product
 import jakarta.persistence.*
 
 @Entity

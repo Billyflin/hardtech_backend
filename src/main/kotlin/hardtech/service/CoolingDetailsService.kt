@@ -1,6 +1,6 @@
 package hardtech.service
 
-import hardtech.entity.CoolingDetails
+import hardtech.entity.products.CoolingDetails
 import hardtech.repository.CoolingDetailsRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
