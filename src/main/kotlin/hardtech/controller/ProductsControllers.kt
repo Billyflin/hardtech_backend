@@ -1,5 +1,6 @@
 package hardtech.controller
 
+import hardtech.dto.ProductDTO
 import hardtech.entity.*
 import hardtech.service.*
 import jakarta.validation.Valid
@@ -14,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException
 @RestController
 @RequestMapping("/products")
 class ProductController(private val productService: ProductService) {
+
 
     @GetMapping
     fun findAll(): ResponseEntity<List<ProductDTO>> {
@@ -97,7 +99,11 @@ class MotherboardDetailsController(
 
 @RestController
 @RequestMapping("/coolingDetails")
-class CoolingDetailsController(private val coolingDetailsService: CoolingDetailsService) {
+class CoolingDetailsController(
+    private val coolingDetailsService: CoolingDetailsService,
+    private val productService: ProductService,
+    private val imageService: ImageService
+) {
 
     @GetMapping("/{productId}")
     fun findByProductId(@PathVariable productId: Long): ResponseEntity<CoolingDetails> {
@@ -120,9 +126,16 @@ class CoolingDetailsController(private val coolingDetailsService: CoolingDetails
     }
 
     @PostMapping
-    fun save(@Valid @RequestBody coolingDetails: CoolingDetails): ResponseEntity<Any> {
+    fun save(
+        @Valid @RequestPart("coolingDetails") coolingDetails: CoolingDetails,
+        @RequestPart("images") images: List<MultipartFile>
+    ): ResponseEntity<Any> {
         return try {
+            val savedProduct = productService.save(coolingDetails.product!!)
+            val imageEntities = images.map { imageService.saveImage(it, savedProduct) }
+            savedProduct.images.addAll(imageEntities)
             val savedCoolingDetails = coolingDetailsService.save(coolingDetails)
+
             ResponseEntity.ok(savedCoolingDetails)
         } catch (e: RuntimeException) {
             ResponseEntity.badRequest().body(e.message)
@@ -167,7 +180,11 @@ class PowerSupplyDetailsController(private val powerSupplyDetailsService: PowerS
 
 @RestController
 @RequestMapping("/processorDetails")
-class ProcessorDetailsController(private val processorDetailsService: ProcessorDetailsService) {
+class ProcessorDetailsController(
+    private val processorDetailsService: ProcessorDetailsService,
+    private val productService: ProductService,
+    private val imageService: ImageService
+) {
 
     @GetMapping("/{productId}")
     fun findByProductId(@PathVariable productId: Long): ResponseEntity<ProcessorDetails> {
@@ -190,19 +207,37 @@ class ProcessorDetailsController(private val processorDetailsService: ProcessorD
     }
 
     @PostMapping
-    fun save(@Valid @RequestBody processorDetails: ProcessorDetails): ResponseEntity<Any> {
+    fun save(
+        @Valid @RequestPart("processorDetails") processorDetails: ProcessorDetails,
+        @RequestPart("images") images: List<MultipartFile>
+    ): ResponseEntity<Any> {
         return try {
+            val savedProduct = productService.save(processorDetails.product!!)
+            val imageEntities = images.map { imageService.saveImage(it, savedProduct) }
+            savedProduct.images.addAll(imageEntities)
             val savedProcessorDetails = processorDetailsService.save(processorDetails)
+
             ResponseEntity.ok(savedProcessorDetails)
         } catch (e: RuntimeException) {
             ResponseEntity.badRequest().body(e.message)
         }
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleHttpMessageNotReadableException(): ResponseEntity<String> {
+        return ResponseEntity.badRequest().body("Falta un campo requerido en la solicitud")
+    }
+
 }
+
 
 @RestController
 @RequestMapping("/RAMDetails")
-class RAMDetailsController(private val ramDetailsService: RAMDetailsService) {
+class RAMDetailsController(
+    private val ramDetailsService: RAMDetailsService,
+    private val productService: ProductService,
+    private val imageService: ImageService
+) {
 
     @GetMapping("/{productId}")
     fun findByProductId(@PathVariable productId: Long): ResponseEntity<RAMDetails> {
@@ -225,19 +260,36 @@ class RAMDetailsController(private val ramDetailsService: RAMDetailsService) {
     }
 
     @PostMapping
-    fun save(@Valid @RequestBody ramDetails: RAMDetails): ResponseEntity<Any> {
+    fun save(
+        @Valid @RequestPart("ramDetails") ramDetails: RAMDetails,
+        @RequestPart("images") images: List<MultipartFile>
+    ): ResponseEntity<Any> {
         return try {
+            val savedProduct = productService.save(ramDetails.product!!)
+            val imageEntities = images.map { imageService.saveImage(it, savedProduct) }
+            savedProduct.images.addAll(imageEntities)
             val savedRAMDetails = ramDetailsService.save(ramDetails)
+
             ResponseEntity.ok(savedRAMDetails)
         } catch (e: RuntimeException) {
             ResponseEntity.badRequest().body(e.message)
         }
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleHttpMessageNotReadableException(): ResponseEntity<String> {
+        return ResponseEntity.badRequest().body("Falta un campo requerido en la solicitud")
+    }
+
 }
 
 @RestController
 @RequestMapping("/graphicsCardDetails")
-class GraphicsCardDetailsController(private val graphicsCardDetailsService: GraphicsCardDetailsService) {
+class GraphicsCardDetailsController(
+    private val graphicsCardDetailsService: GraphicsCardDetailsService,
+    private val productService: ProductService,
+    private val imageService: ImageService
+) {
 
     @GetMapping("/{productId}")
     fun findByProductId(@PathVariable productId: Long): ResponseEntity<GraphicsCardDetails> {
@@ -260,19 +312,36 @@ class GraphicsCardDetailsController(private val graphicsCardDetailsService: Grap
     }
 
     @PostMapping
-    fun save(@Valid @RequestBody graphicsCardDetails: GraphicsCardDetails): ResponseEntity<Any> {
+    fun save(
+        @Valid @RequestPart("graphicsCardDetails") graphicsCardDetails: GraphicsCardDetails,
+        @RequestPart("images") images: List<MultipartFile>
+    ): ResponseEntity<Any> {
         return try {
+            val savedProduct = productService.save(graphicsCardDetails.product!!)
+            val imageEntities = images.map { imageService.saveImage(it, savedProduct) }
+            savedProduct.images.addAll(imageEntities)
             val savedGraphicsCardDetails = graphicsCardDetailsService.save(graphicsCardDetails)
+
             ResponseEntity.ok(savedGraphicsCardDetails)
         } catch (e: RuntimeException) {
             ResponseEntity.badRequest().body(e.message)
         }
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleHttpMessageNotReadableException(): ResponseEntity<String> {
+        return ResponseEntity.badRequest().body("Falta un campo requerido en la solicitud")
+    }
+
 }
 
 @RestController
 @RequestMapping("/storageDetails")
-class StorageDetailsController(private val storageDetailsService: StorageDetailsService) {
+class StorageDetailsController(
+    private val storageDetailsService: StorageDetailsService,
+    private val productService: ProductService,
+    private val imageService: ImageService
+) {
 
     @GetMapping("/{productId}")
     fun findByProductId(@PathVariable productId: Long): ResponseEntity<StorageDetails> {
@@ -295,16 +364,28 @@ class StorageDetailsController(private val storageDetailsService: StorageDetails
     }
 
     @PostMapping
-    fun save(@Valid @RequestBody storageDetails: StorageDetails): ResponseEntity<Any> {
+    fun save(
+        @Valid @RequestPart("storageDetails") storageDetails: StorageDetails,
+        @RequestPart("images") images: List<MultipartFile>
+    ): ResponseEntity<Any> {
         return try {
+            val savedProduct = productService.save(storageDetails.product!!)
+            val imageEntities = images.map { imageService.saveImage(it, savedProduct) }
+            savedProduct.images.addAll(imageEntities)
             val savedStorageDetails = storageDetailsService.save(storageDetails)
+
             ResponseEntity.ok(savedStorageDetails)
         } catch (e: RuntimeException) {
             ResponseEntity.badRequest().body(e.message)
         }
     }
-}
 
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleHttpMessageNotReadableException(): ResponseEntity<String> {
+        return ResponseEntity.badRequest().body("Falta un campo requerido en la solicitud")
+    }
+
+}
 
 @RestController
 @RequestMapping("/salesHistory")

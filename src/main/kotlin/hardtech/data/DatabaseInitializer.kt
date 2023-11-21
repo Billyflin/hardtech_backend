@@ -5,9 +5,8 @@ import hardtech.entity.Categories
 import hardtech.repository.AuthorityRepository
 import hardtech.repository.CategoriesRepository
 import jakarta.annotation.PostConstruct
-import org.springframework.stereotype.Component
 
-@Component
+//@Component
 class CategoriesInitializer(private val categoriesRepository: CategoriesRepository) {
 
     @PostConstruct
@@ -26,7 +25,7 @@ class CategoriesInitializer(private val categoriesRepository: CategoriesReposito
         categoriesRepository.saveAll(defaultCategories)
     }
 }
-@Component
+//@Component
 class AuthorityInitializer(private val authorityRepository: AuthorityRepository) {
 
     @PostConstruct
