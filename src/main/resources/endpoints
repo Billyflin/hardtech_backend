@@ -1,0 +1,8 @@
+
+/motherboardDetails/{productId}
+/coolingDetails/{productId}
+/powerSupplyDetails/{productId}
+/processorDetails/{productId}
+/RAMDetails/{productId}
+/graphicsCardDetails/{productId}
+/storageDetails/{productId}

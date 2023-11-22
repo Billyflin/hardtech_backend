@@ -167,4 +167,8 @@ FROM
 GROUP BY
     p.ProductName;
 -- Tabla de Categorías
-
+CREATE TABLE Categories
+(
+    CategoryID serial PRIMARY KEY,
+    CategoryName varchar(255) UNIQUE
+);
